@@ -1,9 +1,21 @@
+#!/usr/bin/env python
+
+#[START imports]
+import os
+
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
+import jinja2
 import webapp2
 
 DEFAULT_NAME = 'default_connex'
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+        extensions=['jinja2.ext.autoescape'],
+        autoescape=True)
+# [END imports]
 
 
 def connex_key():
@@ -29,34 +41,45 @@ class MainPage(webapp2.RequestHandler):
         user = users.get_current_user()
         createdStreams = []
         subscribedStreams = []
+        create_url = '/create_stream'
+        templatePg = 'login.html'
         if user:
             nickname = user.nickname()
             userId = user.user_id()
-            logout_url = users.create_logout_url(self.request.uri)
-            create_url = '/create_stream'
-            greeting = 'Welcome, {}! <a href ="{}">Create a Stream</a> \
-                       (<a href ="{}">Sign Out</a>)'.format(
-                        nickname, create_url, logout_url)
+            url = users.create_logout_url(self.request.uri)
             query = User.query(User.identity == userId)
             userData = query.get()
+            templatePg = 'main.html'
             if userData:
                 createdStreams = userData.created
                 subscribedStreams = userData.subscribed
 
         else:
-            login_url = users.create_login_url(self.request.uri)
-            greeting = '<a href="{}">Sign In</a>'.format(login_url)
+            url = users.create_login_url(self.request.uri)
 
-        self.response.write(
-                '<html><body>{}</body></html>'.format(greeting))
+        template_values = {
+                'user': user,
+                'url': url,
+                'create_url': create_url,
+                'cStreams': createdStreams,
+                'sStreams': subscribedStreams
+        }
+        template = JINJA_ENVIRONMENT.get_template(templatePg)
+        self.response.write(template.render(template_values))
 
 
 class CreateStream(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         userId = user.user_id()
-        greeting = '<a href="{}">Submit</a>'.format('/')
-        self.response.write('<html><body>{}</body></html>'.format(greeting))
+
+        template_values = {
+                'user': user,
+                'id': userId
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('create.html')
+        self.response.write(template.render(template_values))
 
     def post(self):
         user = users.get_current_user()
