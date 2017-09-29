@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta name="google-signin-scope" content="profile email">
+		<meta name="google-signin-client_id" content=connex-180814.apps.googleusercontent.com">
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<style>
+		body {margin:0;}
+
+		.topnav {
+		 	overflow: hidden;
+		    	background-color: #333;
+		}
+
+		.topnav a {
+	  		float: left;
+		    	display: block;
+			color: #f2f2f2;
+			text-align: center;
+			padding: 14px 16px;
+			text-decoration: none;
+			font-size: 17px;
+		}
+
+		.topnav a:hover {
+		  background-color: #ddd;
+		    color: black;
+		}
+
+		.topnav a.active {
+	    		background-color: #4CAF50;
+			color: white;
+		}
+		th, td {
+			padding: 5px;
+			text-align: center;
+			width: auto;
+		}
+		</style>
+	</head>
+	<body onload="createTable()">
+		<div class="topnav">
+			<a class="active" href="/">Manage</a>
+			<a href="/create-stream">Create</a>
+			<a href="/view">View</a>
+			<a href="/search">Search</a>
+			<a href="/trending">Trending</a>
+			<a href="/social">Social</a>
+		</div>
+		<div style="padding-left:16px">
+			<h1>Connexus</h1>
+			<a href="/" onclick="signOut()">Sign Out</a>
+			<script>
+			function signOut(){
+				var auth2 = gapi.auth2.getAuthInstance();
+				auth2.signOut().then(function(){
+					console.log('User signed out.');
+				});
+			}
+			</script>
+		</div>
+		<b style="padding-left:16px">Streams I Own</b>
+		<ul>
+
+			{% if cStreams|length < 1 %}
+	 			No created streams. Go make some right now!
+	 		{% else %}
+     			<form action="/" method="post">
+     			<div>
+				<table id="created" style="width:70%">
+			    		<thead>
+						<tr>
+							<th>Name</th>
+							<th>Last New Picture</th>
+							<th>Number of Pictures</th>
+							<th>Delete</th>
+						</tr>
+				    	</thead>
+	 				<tbody>
+	 				{%for str in cStreams %}
+	 					<tr>
+							<td><a href="{{str.url}}">{{str.name}}</a></td>
+							<td>{{str.lastUpdate}}</td>
+							<td>{{str.numImages}}</td>
+							<td><input type="checkbox" name="cList[]" value="{{str.name}}"></td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+				<input type="submit" class="button" value="Delete Checked Streams">
+			</div>
+			</form>
+	 		{% endif %}
+		</ul>
+
+		<b style="padding-left:16px">Streams I Subscribe to</b>
+		<ul>
+			{% if sStreams|length < 1 %}
+	 			No subscribed streams. Go subscribe to some right now!
+	 		{% else %}
+     			<div>
+			<form action="/" method="post">
+				<table id="subscribed" style="width:70%">
+			    		<thead>
+						<tr>
+							<th>Name</th>
+							<th>Last New Picture</th>
+							<th>Number of Pictures</th>
+							<th>Views</th>
+							<th>Delete</th>
+						</tr>
+				    	</thead>
+	 				<tbody>
+	 				{%for str in sStreams %}
+	 					<tr>
+							<td><a href="{{str.url}}">{{str.name}}</a></td>
+							<td>{{str.lastUpdate}}</td>
+							<td>{{str.numImages}}</td>
+							<td>{{str.views}}</td>
+							<td><input type="checkbox" name="sList[]" value="{{str.name}}"></td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+				<input type="submit" class="button" value="Unsubscribe Checked Streams">
+			</form>
+			</div>
+	 		{% endif %}
+		</ul>
+		</table>
+
+      	</body>
+</html>
