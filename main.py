@@ -201,6 +201,20 @@ class CreateStream(webapp2.RequestHandler):
             status = data.put()
             allStr.append(status)
             allStr.put()
+                
+        invMsg = self.request.get('invMsg') + '/n Link: ' + link
+        invites = self.request.get('invites').split(',')
+        if(invMsg == default):
+            invMsg = user.nickname() + 'invites you to subscribe to the stream\
+                        ' + stName + './nThe Connex Team/nLink:' + link
+        # Send emails
+        for user in invites:    
+            message = mail.EmailMessage(
+                            sender=donotreply@connex.us,
+                            subject='Your invited to subscribe to a Connex stream')
+            message.to = user
+            message.body = invMsg
+            message.send()
 
         template_values = {
                 'user': user.nickname(),
