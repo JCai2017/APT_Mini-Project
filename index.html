@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+  <div class="jumbotron">
+    <div class="container">
+        {% if user %}
+                <div class="panel-body">
+                <div><h1 id="mast_header_hasUser"><strong> Hi {{ user.email() }} <br>Welcome to Connexus! </strong> </h1></div>
+                <div>
+                      <button type="submit" onclick="location.href = '{{log_url}}'">
+                          {{ log_url_linktext }}
+                      </button>
+                </div>
+                </div>
+              {% else %}
+                <div class="panel-body">
+                <div><h1 id="mast_header_noUser"> <strong> Welcome to Connexus! </strong> </h1></div>
+                <div>
+                      <button type="submit" onclick="location.href = '{{log_url}}'">
+                          {{ log_url_linktext }}
+                      </button>
+                </div>
+                </div>
+              {% endif %}
+    </div>
+  </div>
+{% endblock %}
