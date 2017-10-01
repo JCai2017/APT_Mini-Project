@@ -161,30 +161,6 @@ class SearchList(webapp2.RequestHandler):
         else:
             self.response.write(json.dumps(result))
 
-class SearchListofName(webapp2.RequestHandler):
-    def get(self):
-        namelist = Stream.query().fetch()
-        Result=[]
-        for stream in namelist:
-            Result.append(stream.name)
-
-        self.response.headers['Content-Type'] = 'application/json'
-        term = self.request.get('term')
-        result = dict()
-        if len(term) > 0:
-            candidate = Result
-            for index in candidate:
-                if term.lower() in index.lower():
-                    if len(result) >= 20:
-                        pass
-                    else:
-                        result[index] = index
-                else:
-                    pass
-            self.response.write(json.dumps(result))
-        else:
-            self.response.write(json.dumps(result))
-
 class Trending(webapp2.RequestHandler):
     def get(self):
         Popular_stream_list = PopularStreams.query().order(-PopularStreams.numberofviews).fetch()
