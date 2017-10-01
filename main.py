@@ -32,7 +32,8 @@ class Stream(ndb.Model):
     lastUpdate = ndb.DateProperty(auto_now=True)
     numImages = ndb.IntegerProperty()
     views = ndb.IntegerProperty()
-
+    # add image property
+    images = ndb.BlobProperty(repeated=True)
 
 class AllStreams(ndb.Model):
     streams = ndb.KeyProperty(repeated=True)
