@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+div.gallery {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 180px;
+}
+
+div.gallery:hover {
+    border: 1px solid #777;
+}
+
+div.gallery img {
+    width: 100%;
+    height: auto;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>Streams</h1>
+{% for s in template_values %}
+<div class="gallery">
+  <a target="_blank" href='/{{ s.image }}'>
+    <img src='/{{ s.image }}' alt="Trolltunga Norway" width="300" height="200">
+  </a>
+  <div class="desc">{{ s.name }}</div>
+</div>
+{% endfor %}
+
+
+</body>
+</html>
+

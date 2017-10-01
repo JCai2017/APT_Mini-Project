@@ -22,8 +22,24 @@ class UpLoad(webapp2.RequestHandler):
 
 class ViewAllStream(webapp2.RequestHandler):
 	def get(self):
-		
+		allStr = Steam.all()
+		template_values = dict()
+		for s in allStr:
+			template_values[s.name] = s.coverImage
+		template = JINJA_ENVIRONMENT.get_template('viewAllStream.html')
+		self.response.write(template.render(template_value))
+
 
 class ViewOneStream(webapp2.RequestHandler):
 	def get(self):
-		
+		stName = self.quest.get('stream')
+		stream = Stream.query(Stream.name == stName).get()
+		url = stream.url
+		cover = stream.coverImage
+		tags = stream.tags
+		lastUpdate = stream.lastUpdate
+		views = stream.views
+		images = stream.images
+		template = JINJA_ENVIRONMENT.get_template('viewOneStream.html')
+		self.response.write(template.render(name = stName, cover = cover, url = url, 
+			tags = tags, lastUpdate = lastUpdate, views = views, images = images))
