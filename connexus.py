@@ -118,30 +118,6 @@ class Search(webapp2.RequestHandler):
             template = JINJA_ENVIRONMENT.get_template('Search.html')
             self.response.write(template.render())
 
-class ErrorPage(webapp2.RequestHandler):
-    def get(self):
-        errorType = self.request.get('errorType')
-        if errorType=='0':
-            errorMsg = "Trying to create a new stream which has the same name as an existing stream"
-        elif errorType=='1':
-            errorMsg = "You didn't select an image."
-        elif errorType=='2':
-            errorMsg = "Sorry, only string is allowed as urlsafe input"
-        elif errorType=='3':
-            errorMsg = "Sorry, the urlsafe string seems to be invalid"
-        elif errorType=='4':
-            errorMsg = "Stream's name cannot be empty"
-        elif errorType=='5':
-            errorMsg = "You cannot subscribe your own stream"
-        else:
-            errorMsg = "Something went wrong"
-
-        template_values = {
-            'errorMsg': errorMsg
-        }
-        template = JINJA_ENVIRONMENT.get_template('Error_Page.html')
-        self.response.write(template.render(template_values))
-
 class SearchList(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'application/json'
@@ -278,6 +254,4 @@ app = webapp2.WSGIApplication([
     ('/trending', Trending),
     ('/updatelistauto', UpdateListAuto),
     ('/searchlist', SearchList),
-    ('/searchlistofname', SearchListofName),
-    ('/error', ErrorPage),
 ], debug=True)
