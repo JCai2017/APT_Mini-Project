@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-#[START imports]
+# [START imports]
 import os
 
 from google.appengine.api import users
+from google.appengine.api import mail
 from google.appengine.ext import ndb
 
 import jinja2
@@ -32,8 +33,7 @@ class Stream(ndb.Model):
     lastUpdate = ndb.DateProperty(auto_now=True)
     numImages = ndb.IntegerProperty()
     views = ndb.IntegerProperty()
-    # add image property
-    images = ndb.BlobProperty(repeated=True)
+
 
 class AllStreams(ndb.Model):
     streams = ndb.KeyProperty(repeated=True)
@@ -52,8 +52,8 @@ class MainPage(webapp2.RequestHandler):
         user = users.get_current_user()
         createdStreams = []
         subscribedStreams = []
-        create_url = '/create-stream'
         templatePg = 'login.html'
+        logging.log(20, user)
         if user:
             nickname = user.nickname()
             userId = user.user_id()
@@ -78,9 +78,11 @@ class MainPage(webapp2.RequestHandler):
                 'cStreams': createdStreams,
                 'sStreams': subscribedStreams
         }
+        for st in allStr.streams:
+            logging.log(20, st)
+
         template = JINJA_ENVIRONMENT.get_template(templatePg)
         self.response.write(template.render(template_values))
-
 
     def post(self):
         user = users.get_current_user()
@@ -102,10 +104,10 @@ class MainPage(webapp2.RequestHandler):
             del userData.created[i]
             key = allStr.streams[i]
             del allStr.streams[i]
+            del allStr.names[i]
             key.delete()
             userData.put()
             allStr.put()
-
 
         for entry in checkedS:
             del userData.subscribed[entry]
@@ -142,7 +144,9 @@ class CreateStream(webapp2.RequestHandler):
         data = User(parent=connex_key())
         allStr = AllStreams.query().get()
         status = 0
+        link = ''
         tagList = self.request.get('tags').split(",")
+        default = 'Optional message for invite'
 
         if userData:
             userData.name = user.nickname()
@@ -156,10 +160,9 @@ class CreateStream(webapp2.RequestHandler):
                             'id': userId,
                             'msg': 'Stream name is already in use'
                     }
- 
+
                     template = JINJA_ENVIRONMENT.get_template('create.html')
                     self.response.write(template.render(template_values))
-                    #self.redirect('/create-stream')
                     return
 
             link = self.request.get('name')
@@ -186,7 +189,7 @@ class CreateStream(webapp2.RequestHandler):
                             'id': userId,
                             'msg': 'Stream name is already in use'
                     }
- 
+
                     template = JINJA_ENVIRONMENT.get_template('create.html')
                     self.response.write(template_values)
                     self.redirect('/create-stream')
@@ -195,25 +198,28 @@ class CreateStream(webapp2.RequestHandler):
             link = re.sub(r"[^\w\s]", '', link)
             link = re.sub(r"\s", '-', link)
             stream = Stream(name=self.request.get('name'),
-                                url=link,
-                                coverImage=self.request.get('image'),
-                                tags=tagList, numImages=0, views=0)
+                            url=link, coverImage=self.request.get('image'),
+                            tags=tagList, numImages=0, views=0)
             data.created.append(stream)
             status = data.put()
             allStr.append(status)
             allStr.put()
-                
+
+        user = users.get_current_user()
         invMsg = self.request.get('invMsg') + '/n Link: ' + link
         invites = self.request.get('invites').split(',')
         if(invMsg == default):
             invMsg = user.nickname() + 'invites you to subscribe to the stream\
                         ' + stName + './nThe Connex Team/nLink:' + link
         # Send emails
-        for user in invites:    
+        logging.log(20, invites)
+        for invitee in invites:
+            if invitee.isspace():
+                continue
             message = mail.EmailMessage(
-                            sender=donotreply@connex.us,
+                            sender='donotreply@connex.us',
                             subject='Your invited to subscribe to a Connex stream')
-            message.to = user
+            message.to = invitee
             message.body = invMsg
             message.send()
 
@@ -224,7 +230,7 @@ class CreateStream(webapp2.RequestHandler):
         }
         template = JINJA_ENVIRONMENT.get_template('main.html')
         self.response.write(template.render(template_values))
-        
+
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
