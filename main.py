@@ -69,17 +69,22 @@ class MainPage(webapp2.RequestHandler):
                 createdStreams = userData.created
                 subscribedStreams = userData.subscribed
 
+
+            template_values = {
+                    'user': nickname,
+                    'url': url,
+                    'cStreams': createdStreams,
+                    'sStreams': subscribedStreams
+            }
+
         else:
             url = users.create_login_url(self.request.uri)
+            logging.log(20, 'No user found')
 
-        template_values = {
-                'user': nickname,
-                'url': url,
-                'cStreams': createdStreams,
-                'sStreams': subscribedStreams
-        }
-        for st in allStr.streams:
-            logging.log(20, st)
+            template_values = {'url': url}
+
+        #for st in allStr.streams:
+            #logging.log(20, st)
 
         template = JINJA_ENVIRONMENT.get_template(templatePg)
         self.response.write(template.render(template_values))

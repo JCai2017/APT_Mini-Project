@@ -49,7 +49,7 @@
 		</div>
 		<div style="padding-left:16px">
 			<h1>Connexus</h1>
-			<a href="/" onclick="signOut()">Sign Out</a>
+			<a href="{{url}}" onclick="signOut()">Sign Out</a>
 			<script>
 			function signOut(){
 				var auth2 = gapi.auth2.getAuthInstance();
@@ -59,6 +59,8 @@
 			}
 			</script>
 		</div>
+		<br/>
+		<br/>
 		<b style="padding-left:16px">Streams I Own</b>
 		<ul>
 
