@@ -97,6 +97,7 @@ class MainPage(webapp2.RequestHandler):
         allStr = AllStreams.query().get()
         checkedC = self.request.get_all('cList[]')
         checkedS = self.request.get_all('sList[]')
+        logging.log(20, allStr.names)
         logging.log(20, checkedC)
 
         for entry in checkedC:
@@ -107,6 +108,14 @@ class MainPage(webapp2.RequestHandler):
                 i = i + 1
 
             del userData.created[i]
+
+            i = 0
+            for st in allStr.names:
+                if st == entry:
+                    break
+                i = i + 1
+
+            logging.log(20, i)
             key = allStr.streams[i]
             del allStr.streams[i]
             del allStr.names[i]
@@ -184,11 +193,11 @@ class CreateStream(webapp2.RequestHandler):
             allStr.put()
 
         else:
-            data.identity = userID
+            data.identity = userId
             data.name = user.nickname()
             stName = self.request.get('name')
-            for st in allStr:
-                if st.name == stName:
+            for st in allStr.names:
+                if st == stName:
                     template_values = {
                             'user': user,
                             'id': userId,
@@ -207,10 +216,14 @@ class CreateStream(webapp2.RequestHandler):
                             tags=tagList, numImages=0, views=0)
             data.created.append(stream)
             status = data.put()
-            allStr.append(status)
+            allStr.streams.append(status)
+            allStr.names.append(stName)
             allStr.put()
 
         user = users.get_current_user()
+        userId = user.user_id()
+        query = User.query(User.identity == userId)
+        userData = query.get()
         invMsg = self.request.get('invMsg') + '/n Link: ' + link
         invites = self.request.get('invites').split(',')
         if(invMsg == default):
@@ -219,7 +232,7 @@ class CreateStream(webapp2.RequestHandler):
         # Send emails
         logging.log(20, invites)
         for invitee in invites:
-            if invitee.isspace():
+            if invitee.isspace() or not invitee:
                 continue
             message = mail.EmailMessage(
                             sender='donotreply@connex.us',
