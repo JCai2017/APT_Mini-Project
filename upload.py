@@ -22,7 +22,7 @@ class UpLoad(webapp2.RequestHandler):
 
 class ViewAllStream(webapp2.RequestHandler):
 	def get(self):
-		allStr = Steam.all()
+		allStr = Stream.all()
 		template_values = dict()
 		for s in allStr:
 			template_values[s.name] = s.coverImage
@@ -32,7 +32,7 @@ class ViewAllStream(webapp2.RequestHandler):
 
 class ViewOneStream(webapp2.RequestHandler):
 	def get(self):
-		stName = self.quest.get('stream')
+		stName = self.request.get('stream')
 		stream = Stream.query(Stream.name == stName).get()
 		url = stream.url
 		cover = stream.coverImage

@@ -7,6 +7,10 @@ from google.appengine.api import users
 from google.appengine.api import mail
 from google.appengine.ext import ndb
 
+from upload import UpLoad
+from upload import ViewAllStream
+from upload import ViewOneStream
+
 import jinja2
 import webapp2
 import logging
@@ -211,6 +215,7 @@ class CreateStream(webapp2.RequestHandler):
             link = self.request.get('name')
             link = re.sub(r"[^\w\s]", '', link)
             link = re.sub(r"\s", '-', link)
+            link = '/?' + link 
             stream = Stream(name=self.request.get('name'),
                             url=link, coverImage=self.request.get('image'),
                             tags=tagList, numImages=0, views=0)
@@ -253,4 +258,7 @@ class CreateStream(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/create-stream', CreateStream),
+    ('/upload', UpLoad),
+    ('/view-all', ViewAllStream),
+    ('/?.*', ViewOneStream)
 ], debug=True)
