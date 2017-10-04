@@ -1,41 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "base.html" %}
+{% block title %}View_all{% endblock %}
+{% block imagesize%}
 <style>
-div.gallery {
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 180px;
+.piccontain{
+  height: 300px;
+  position: relative
 }
-
-div.gallery:hover {
-    border: 1px solid #777;
-}
-
-div.gallery img {
-    width: 100%;
-    height: auto;
-}
-
-div.desc {
-    padding: 15px;
-    text-align: center;
+.thumbnail img {
+    position: center;
+    vertical-align:middle;
+    max-height: 300px;
 }
 </style>
-</head>
-<body>
-<h1>Streams</h1>
-{% for s in template_values %}
-<div class="gallery">
-  <a target="_blank" href='/{{ s.image }}'>
-    <img src='/{{ s.image }}' alt="Trolltunga Norway" width="300" height="200">
-  </a>
-  <div class="desc">{{ s.name }}</div>
+{% endblock %}
+{% block content %}
+
+<div class="row animate-box" data-animate-effect="fadeInLeft">
+  {% for Stream in Streams %}
+ <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" work-item>
+    <div class="thumbnail">
+	<div class='piccontain'>
+        <a href="/view_one?streamKey={{Stream.key.urlsafe()}}">
+          {% if Stream.coverImage %}
+            <img class="img-responsive center-block" src="{{Stream.coverImage}}" alt="{{Stream.name}}">
+          {% else %}
+            <img class="img-responsive" src="assets/NoCoverAvailable.jpg" alt="No Cover">
+          {% endif %}
+        </a>
+      </div>
+      <div class="caption">
+        <h3>{{Stream.name}}</h3>
+        <p>Created by {{Stream.ownerEmail}}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
-{% endfor %}
-
-
-</body>
-</html>
-
+<br>
+{% endblock %}

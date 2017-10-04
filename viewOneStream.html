@@ -1,50 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-div.gallery {
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 180px;
-}
+{% extends "base.html" %}
+{% block title %}View_single{% endblock %}
+{% block content %}
 
-div.gallery:hover {
-    border: 1px solid #777;
-}
-
-div.gallery img {
-    width: 100%;
-    height: auto;
-}
-
-div.desc {
-    padding: 15px;
-    text-align: center;
-}
-</style>
-</head>
-<body>
-<h1>{{ name }}</h1>
-<div class="streamDescription">
-  <a target="_blank" href='/{{ cover }}'>
-    <img src='/{{ cover }}' width="300" height="200">
-  </a>
-  {% for t in tags %}
-  <div class="desc">{{ t }}</div>
+<div class="row">
+{% if images %}
+  {% for img in images %}
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="/img?img_id={{img.key.urlsafe()}}" alt="image">
+	  <div class="caption">
+	  <p>Created at {{img.time.strftime('%I:%M%P on %b %d, %Y')}}</p>
+	  </div>
+    </div>
+  </div>
   {% endfor %}
+{% else %}
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="assets/NoCoverAvailable.jpg" alt="NoImage">
+    </div>
+  </div>
+{% endif %}
 </div>
-<h2>Last Updated: {{ lastUpdate }}</h2>
-<h2>Views: {{ views }}</h2>
-{% for s in images %}
-<div class="gallery">
-  <a target="_blank" href='/{{ s }}'">
-    <img src='/{{ s }}' width="300" height="200">
-  </a>
+<div class="row">
+  {% if ownerCheck|string() == 'isOwner' %}
+  <form action="/upload?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
+    <div><input type="file" name="img"/></div>
+    <input class="btn btn-default" type="submit" value="Add Image">
+  </form>
+  {% else %}
+  <form id="multipleupload" action="/subscribe?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
+    <input class="btn btn-default" type="submit" value="Subscribe">
+  </form>
+  {% endif %}
 </div>
-{% endfor %}
-
-
-</body>
-</html>
-
+<br>
+{% endblock %}
