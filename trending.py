@@ -7,9 +7,12 @@ from google.appengine.api import users
 from google.appengine.api import mail
 from google.appengine.ext import ndb
 
+import datetime
 import jinja2
 import webapp2
 import logging
+import collections
+import time
 import re
 
 DEFAULT_NAME = 'default_connex'
@@ -31,8 +34,6 @@ class Stream(ndb.Model):
 	coverImage = ndb.StringProperty()
 	lastUpdate = ndb.DateProperty(auto_now=True)
 	time = ndb.DateProperty(auto_now_add=True)
-	numImages = ndb.IntegerProperty()
-	views = ndb.IntegerProperty()
 
 class User(ndb.Model):
 	identity = ndb.StringProperty(indexed=True)

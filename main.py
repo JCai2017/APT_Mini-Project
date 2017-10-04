@@ -39,8 +39,6 @@ class Stream(ndb.Model):
 	coverImage = ndb.StringProperty()
 	lastUpdate = ndb.DateProperty(auto_now=True)
 	time = ndb.DateTimeProperty(auto_now_add=True)
-	numImages = ndb.IntegerProperty()
-	views = ndb.IntegerProperty()
 
 class Image(ndb.Model):
 	time = ndb.DateTimeProperty(auto_now_add=True)
@@ -54,7 +52,7 @@ class Tag(ndb.Model):
 
 class View(ndb.Model):
 	stream = ndb.KeyProperty(kind=Stream)
-	time = ndb.StringProperty()
+	time = ndb.DateTimeProperty(auto_now_add=True)
 
 class User(ndb.Model):
 	identity = ndb.StringProperty(indexed=True)
@@ -324,7 +322,7 @@ class CreateStream(webapp2.RequestHandler):
 						message.body = "You are invited to my stream! \nby " + user.email()
 					message.send()
 		
-		self.redirect('/manage')
+		self.redirect('/')
 
 class Subscribe(webapp2.RequestHandler):
 	def post(self):

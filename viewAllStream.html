@@ -21,8 +21,8 @@
     <div class="thumbnail">
 	<div class='piccontain'>
         <a href="/view_one?streamKey={{Stream.key.urlsafe()}}">
-          {% if Stream.coverUrl %}
-            <img class="img-responsive center-block" src="{{Stream.coverUrl}}" alt="{{Stream.name}}">
+          {% if Stream.coverImage %}
+            <img class="img-responsive center-block" src="{{Stream.coverImage}}" alt="{{Stream.name}}">
           {% else %}
             <img class="img-responsive" src="assets/NoCoverAvailable.jpg" alt="No Cover">
           {% endif %}
