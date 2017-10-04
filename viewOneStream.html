@@ -3,6 +3,11 @@
 {% block content %}
 
 <div class="row">
+{% if streamKey.get().coverImage %}
+	<div class="col-sm-6 col-md-4">
+		<img class="img-responsive center-block" src="{{streamKey.get().coverImage}}" alt="{{streamKey.get().name}}" width="300" height="300">
+	</div>
+{% endif  %}
 {% if images %}
   {% for img in images %}
   <div class="col-sm-6 col-md-4">
@@ -17,12 +22,6 @@
   <form action="/view_one?streamKey={{streamKey.urlsafe()}}" method="post">
     <button id="search_btn" type="submit" class="btn btn-primary" value="skiptimes" name="skiptimes">MorePictrues</button>
   </form>
-{% else %}
-  <div class="col-sm-6 col-md-4">
-    <div class="thumbnail">
-      <img src="assets/NoCoverAvailable.jpg" alt="NoImage">
-    </div>
-  </div>
 {% endif %}
 </div>
 <div class="row">

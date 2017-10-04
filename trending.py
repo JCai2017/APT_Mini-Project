@@ -66,11 +66,13 @@ class Trending(webapp2.RequestHandler):
 	def get(self):
 		user = users.get_current_user()
 		Popular_stream_list = PopularStreams.query().order(-PopularStreams.numberofviews).fetch()
+		allStr = Stream.query().fetch()
 		stream_list = list()
 		view_list = list()
 		for item in Popular_stream_list:
-			stream_list.append(item.stream)
-			view_list.append(item.numberofviews)
+			if item.stream.get() in allStr:
+				stream_list.append(item.stream)
+				view_list.append(item.numberofviews)
 
 		FinalResult = zip(stream_list, view_list)
 
