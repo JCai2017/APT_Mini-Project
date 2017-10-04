@@ -4,6 +4,8 @@
 		<meta name="google-signin-scope" content="profile email">
 		<meta name="google-signin-client_id" content=connex-180814.apps.googleusercontent.com">
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<link rel="stylesheet" href="css/animate.css">
 		<style>
 		body {margin:0;}
 
@@ -41,11 +43,11 @@
 	</head>
 	<body>
 		<div class="topnav">
-			<ul>
-			<a class="active" href="/">Manage</a>
-			<a href="/create-stream">Create</a>
-			<a href="/view-all">View</a>
-			<a href="/trending">Trending</a>
+			<ul class="nav navbar-nav">
+			<li><a class="active" href="/">Manage</a></li>
+			<li><a href="/create-stream">Create</a></li>
+			<li><a href="/view-all">View</a></li>
+			<li><a href="/trending">Trending</a></li>
 			</ul>
 			<form class="navbar-form navbar-right" action="/search" method="post">
 		          <div class= "col-xs-pull-6">

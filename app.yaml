@@ -10,6 +10,8 @@ handlers:
 - url: /stylesheets
   static_dir: stylesheets
 
+- url: /css
+  static_dir: css
 - url: /assets
   static_dir: assets
 

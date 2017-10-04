@@ -107,6 +107,6 @@ class ImageHandler(webapp2.RequestHandler):
 	def get(self):
 		ImageKey = ndb.Key(urlsafe=self.request.get('img_id'))
 		img = ImageKey.get()
-		markerImage = images.resize(img.full_size_image, width=100, height=100, crop_to_fit=True)
+		markerImage = images.resize(img.full_size_image, width=300, height=300, crop_to_fit=True)
 		self.response.headers['Content-Type'] = 'image/png'
 		self.response.out.write(markerImage)

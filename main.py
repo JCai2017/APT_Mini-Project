@@ -246,8 +246,7 @@ class CreateStream(webapp2.RequestHandler):
 			link = re.sub(r"\s", '-', link)
 			link = '/?' + link
 			stream = Stream(name=stName, ownerEmail=email,
-							url=link, coverImage=self.request.get('image'),
-							numImages=0, views=0)
+							url=link, coverImage=self.request.get('image'))
 			stream.put()
 			userData.created.append(stream)
 			status = userData.put()
@@ -282,8 +281,7 @@ class CreateStream(webapp2.RequestHandler):
 			link = re.sub(r"\s", '-', link)
 			link = '/?' + link
 			stream = Stream(name=stName, ownerEmail=email,
-							url=link, coverImage=self.request.get('image'),
-							numImages=0, views=0)
+							url=link, coverImage=self.request.get('image'))
 			stream.put()
 			data.created.append(stream)
 			status = data.put()
