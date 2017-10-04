@@ -155,12 +155,12 @@ class MainPage(webapp2.RequestHandler):
 			userData.put()
 			allStr.put()
 
+		logging.log(20, checkedS)
 		# UnSubscribe Streams
 		lst = Subscriber().query(Subscriber.email == user.email()).fetch()
-		for entry in checkedS:
-			streamKey = userData.subscribed[entry].key
-			for sub in lst:
-				if sub.stream == streamKey:
+		for sub in lst:
+			for entry in checkedS:
+				if sub.stream.get().name == entry:
 					sub.key.delete()
 					break
 
