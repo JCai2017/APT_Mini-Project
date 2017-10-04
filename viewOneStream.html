@@ -3,12 +3,35 @@
 {% block content %}
 
 <div class="row">
-{% if streamKey.get().coverImage %}
-	<div class="col-sm-6 col-md-4">
-		<img class="img-responsive center-block" src="{{streamKey.get().coverImage}}" alt="{{streamKey.get().name}}" width="300" height="300">
+<table>
+<tr>
+  {% if ownerCheck|string() == 'isOwner' %}
+  <td><form action="/upload?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
+    <div><label for="image_uploads">Choose images to upload!</label>
+	<input type="file" id="image_uploads" name="img"/></div>
+	<div class="preview">
+		<p>No files currently selected for upload</p>
 	</div>
+    <div class="addbt"><input class="btn btn-default" type="submit" value="Add Image"></div>
+  </form></td>
+  {% else %}
+  <td><form id="multipleupload" action="/subscribe?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
+    <input class="btn btn-default" type="submit" value="Subscribe">
+  </form></td>
+  {% endif %}
+{% if streamKey.get().coverImage %}
+<td height="300" width="300">
+	<!--<div class="col-sm-6 col-md-4">-->
+		<img class="img-responsive center-block" src="{{streamKey.get().coverImage}}" alt="{{streamKey.get().name}}" width="300" height="300">
+	<!--</div>-->
+	</td>
 {% endif  %}
+</tr></table></div>
+<div class="row">
 {% if images %}
+  <form action="/view_one?streamKey={{streamKey.urlsafe()}}" method="post">
+    <button id="search_btn" type="submit" class="btn btn-primary" value="skiptimes" name="skiptimes">MorePictrues</button>
+  </form>
   {% for img in images %}
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
@@ -19,22 +42,55 @@
     </div>
   </div>
   {% endfor %}
-  <form action="/view_one?streamKey={{streamKey.urlsafe()}}" method="post">
-    <button id="search_btn" type="submit" class="btn btn-primary" value="skiptimes" name="skiptimes">MorePictrues</button>
-  </form>
 {% endif %}
 </div>
-<div class="row">
-  {% if ownerCheck|string() == 'isOwner' %}
-  <form action="/upload?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
-    <div><input type="file" name="img"/></div>
-    <input class="btn btn-default" type="submit" value="Add Image">
-  </form>
-  {% else %}
-  <form id="multipleupload" action="/subscribe?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
-    <input class="btn btn-default" type="submit" value="Subscribe">
-  </form>
-  {% endif %}
-</div>
 <br>
+<style>
+form label {
+	background-color: #7F9CCB;
+	padding: 5px 10px;
+	border-radius: 5px;
+	border: 1px ridge black;
+	font-size: 1.2rem;
+	height: auto;
+}
+form label:hover {
+	background-color: #2D5BA3;
+	color: white;
+}
+form label:active {
+	background-color: #0D3F8F;
+	color: white;
+}
+</style>
+<script>
+	var input = document.querySelector('#image_uploads');
+	var addbt = document.querySelector('.addbt');
+	var preview = document.querySelector('.preview');
+	addbt.style.visibility = 'hidden';
+	input.style.visibility = 'hidden';
+	input.addEventListener('change', updateButton);
+	function updateButton() {
+		while(preview.firstChild) {
+			preview.removeChild(preview.firstChild);
+		}
+		var curFiles = input.files;
+		if(curFiles.length == 0) {
+			var para = document.createElement('p');
+			para.textContent = 'No files currently selected for upload';
+			preview.appendChild(para);
+		} else {
+			addbt.style.visibility = 'visible';
+			var list = document.createElement('ol');
+			preview.appendChild(list);
+			for(var i=0; i<curFiles.length; i++) {
+				var listItem = document.createElement('li');
+				var para = document.createElement('p');
+				para.textContent = 'File name ' + curFiles[i].name + ".";
+				listItem.appendChild(para);
+				list.appendChild(listItem);
+			}
+		}
+	}
+</script>
 {% endblock %}
