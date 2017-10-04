@@ -13,3 +13,5 @@ FYI:
 2.cron.yaml: used to tell gae to automately update things.(used for trending)
 3.base.html: inlcudes top nav-bar, sign-off button, and css, so other html files only have use "extend base.html" to include the former things. It makes other html files cleaner lol.
 
+When deploy, use:
+"gcloud app deploy app.yaml index.yaml cron.yaml"
