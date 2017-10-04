@@ -74,7 +74,7 @@ class ViewOneStream(webapp2.RequestHandler):
 		streamKey = ndb.Key(urlsafe=self.request.get('streamKey'))
 		stream = streamKey.get()
 
-		imgList = Image.query(Image.stream == streamKey).order(-Image.time).fetch()
+		imgList = Image.query(Image.stream == streamKey).order(-Image.time).fetch(3)
 		ownerCheck = 'notOwner'
 		if stream.ownerEmail == user.email():
 			ownerCheck = 'isOwner'

@@ -310,7 +310,7 @@ class CreateStream(webapp2.RequestHandler):
 					if invitee.isspace():
 						continue
 					message = mail.EmailMessage(
-							sender='jason.cai.plano@gmail.com',
+							sender='kaichih1013@gmail.com',
 							subject='Your invited to subscribe to a Connex stream')
 					message.to = invitee
 					if invMsg != "":
