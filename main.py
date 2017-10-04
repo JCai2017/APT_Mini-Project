@@ -90,22 +90,21 @@ class MainPage(webapp2.RequestHandler):
 			userData = query.get()
 			templatePg = 'main.html'
 			
-			if userData:
-				# Get number of views and pictures of self-owned streams
-				createdStreams = Stream().query(Stream.ownerEmail == user.email())
-				for elem in createdStreams:
-					viewCount = View.query(View.stream == elem.key).count(limit=None)
-					imgCount = Image.query(Image.stream == elem.key).count(limit=None)
-					numView.append(viewCount)
-					numImg.append(imgCount)
-				# Get number of views and picture of subscribed streams
-				lst = Subscriber.query(Subscriber.email == user.email())
-				for elem in lst:
-					subscribedStreams.append(elem.stream)
-					viewCount = View.query(View.stream == elem.stream).count(limit=None)
-					imgCount = Image.query(Image.stream == elem.stream).count(limit=None)
-					numView_sub.append(viewCount)
-					numImg_sub.append(imgCount)
+			# Get number of views and pictures of self-owned streams
+			createdStreams = Stream().query(Stream.ownerEmail == user.email())
+			for elem in createdStreams:
+				viewCount = View.query(View.stream == elem.key).count(limit=None)
+				imgCount = Image.query(Image.stream == elem.key).count(limit=None)
+				numView.append(viewCount)
+				numImg.append(imgCount)
+			# Get number of views and picture of subscribed streams
+			lst = Subscriber.query(Subscriber.email == user.email())
+			for elem in lst:
+				subscribedStreams.append(elem.stream)
+				viewCount = View.query(View.stream == elem.stream).count(limit=None)
+				imgCount = Image.query(Image.stream == elem.stream).count(limit=None)
+				numView_sub.append(viewCount)
+				numImg_sub.append(imgCount)
 			
 			my_group_list = zip(createdStreams, numView, numImg)
 			sub_group_list = zip(subscribedStreams, numView_sub, numImg_sub)
@@ -349,7 +348,6 @@ class Subscribe(webapp2.RequestHandler):
 		}
 		template = JINJA_ENVIRONMENT.get_template('viewOneStream.html')
 		self.response.write(template.render(template_values))
-
 
 app = webapp2.WSGIApplication([
 	('/', MainPage),
