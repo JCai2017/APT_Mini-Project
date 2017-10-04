@@ -2,30 +2,24 @@ runtime: python27
 api_version: 1
 threadsafe: true
 
-# Handlers match in order, put above the default handler.
+# [START handlers]
 handlers:
-- url: /stylesheets
-  static_dir: stylesheets
-
-- url: /css
-  static_dir: css
-- url: /assets
-  static_dir: assets
-- url: /js
-  static_dir: js
-- url: /fonts
-  static_dir: fonts
-
+- url: /static
+  static_dir: static
 
 - url: /.*
-  script: connexus.app
-- url: /.*
-  script: trending.app
+  script: main.app
 
+- url: /create_stream
+  script: main.app
+  login: required
+
+# [END handlers]
+
+# [START libraries]
 libraries:
 - name: webapp2
   version: latest
 - name: jinja2
   version: latest
-- name: PIL
-  version: latest
+# [END libraries]

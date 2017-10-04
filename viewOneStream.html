@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}View_single{% endblock %}
+{% block content %}
+
+<div class="row">
+{% if images %}
+  {% for img in images %}
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="/img?img_id={{img.key.urlsafe()}}" alt="image">
+	  <div class="caption">
+	  <p>Created at {{img.time.strftime('%I:%M%P on %b %d, %Y')}}</p>
+	  </div>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="assets/NoCoverAvailable.jpg" alt="NoImage">
+    </div>
+  </div>
+{% endif %}
+</div>
+<div class="row">
+  {% if ownerCheck|string() == 'isOwner' %}
+  <form action="/upload?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
+    <div><input type="file" name="img"/></div>
+    <input class="btn btn-default" type="submit" value="Add Image">
+  </form>
+  {% else %}
+  <form id="multipleupload" action="/subscribe?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
+    <input class="btn btn-default" type="submit" value="Subscribe">
+  </form>
+  {% endif %}
+</div>
+<br>
+{% endblock %}
