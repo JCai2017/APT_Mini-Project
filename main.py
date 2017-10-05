@@ -377,21 +377,23 @@ class Subscribe(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('viewOneStream.html')
         self.response.write(template.render(template_values))
 
-class ErrorPage(webapp2.RequestHandler):
-	def get(self):
-		errorType = self.request.get('errorType')
-		if errorType == '0':
-			errorMsg = "Sorry, only string is allowed as urlsafe input"
-		elif errorType == '1':
-			errorMsg = "Sorry, the urlsafe string seems to be invalid"
-		else:
-			errorMsg = "Something went wrong"
 
-		template_values = {
-			'errorMsg': errorMsg
-		}
-		template = JINJA_ENVIRONMENT.get_template('Error_Page.html')
-		self.response.write(template.render(template_values))
+class ErrorPage(webapp2.RequestHandler):
+    def get(self):
+        errorType = self.request.get('errorType')
+        if errorType == '0':
+            errorMsg = "Sorry, only string is allowed as urlsafe input"
+        elif errorType == '1':
+            errorMsg = "Sorry, the urlsafe string seems to be invalid"
+        else:
+            errorMsg = "Something went wrong"
+
+        template_values = {
+            'errorMsg': errorMsg
+        }
+        template = JINJA_ENVIRONMENT.get_template('Error_Page.html')
+        self.response.write(template.render(template_values))
+
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
@@ -408,5 +410,5 @@ app = webapp2.WSGIApplication([
     ('/updatehour', UpdateHour),
     ('/updateday', UpdateDay),
     ('/updatelistauto', UpdateListAuto),
-	('error', ErrorPage),
+    ('error', ErrorPage),
 ], debug=True)
