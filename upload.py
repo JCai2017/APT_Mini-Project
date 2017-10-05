@@ -47,8 +47,8 @@ class UpLoad(webapp2.RequestHandler):
 		img = Image()
 		img.stream = streamKey
 		img_temp = self.request.get('img')
-		img.Thumbnail = images.resize(img_temp, width=300, height=300, crop_to_fit=True)
-		img.full_size_image = img_temp
+		img.Thumbnail = images.resize(img_temp, width=280, height=280, crop_to_fit=True)
+		img.full_size_image = img.Thumbnail
 		img.put()
 
 		stream = streamKey.get()
