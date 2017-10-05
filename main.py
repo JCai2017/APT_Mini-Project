@@ -23,53 +23,61 @@ from trending import *
 DEFAULT_NAME = 'default_connex'
 
 JINJA_ENVIRONMENT = jinja2.Environment(
-		loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
-		extensions=['jinja2.ext.autoescape'],
-		autoescape=True)
+        loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+        extensions=['jinja2.ext.autoescape'],
+        autoescape=True)
 # [END imports]
 
 
 def connex_key():
-	return ndb.Key('Connex', DEFAULT_NAME)
+    return ndb.Key('Connex', DEFAULT_NAME)
+
 
 class Stream(ndb.Model):
-	name = ndb.StringProperty(indexed=True)
-	ownerEmail = ndb.StringProperty()
-	url = ndb.StringProperty()
-	coverImage = ndb.StringProperty()
-	lastUpdate = ndb.DateProperty(auto_now=True)
-	time = ndb.DateTimeProperty(auto_now_add=True)
+    name = ndb.StringProperty(indexed=True)
+    ownerEmail = ndb.StringProperty()
+    url = ndb.StringProperty()
+    coverImage = ndb.StringProperty()
+    lastUpdate = ndb.DateProperty(auto_now=True)
+    time = ndb.DateTimeProperty(auto_now_add=True)
+
 
 class Image(ndb.Model):
-	time = ndb.DateTimeProperty(auto_now_add=True)
-	stream = ndb.KeyProperty(kind=Stream)
-	full_size_image = ndb.BlobProperty()
-	Thumbnail = ndb.BlobProperty()
+    time = ndb.DateTimeProperty(auto_now_add=True)
+    stream = ndb.KeyProperty(kind=Stream)
+    full_size_image = ndb.BlobProperty()
+    Thumbnail = ndb.BlobProperty()
+
 
 class Tag(ndb.Model):
-	name = ndb.StringProperty()
-	stream = ndb.KeyProperty(kind=Stream)
+    name = ndb.StringProperty()
+    stream = ndb.KeyProperty(kind=Stream)
+
 
 class View(ndb.Model):
-	stream = ndb.KeyProperty(kind=Stream)
-	time = ndb.DateTimeProperty(auto_now_add=True)
+    stream = ndb.KeyProperty(kind=Stream)
+    time = ndb.DateTimeProperty(auto_now_add=True)
+
 
 class User(ndb.Model):
-	identity = ndb.StringProperty(indexed=True)
-	name = ndb.StringProperty(indexed=False)
-	created = ndb.LocalStructuredProperty(Stream, repeated=True)
+    identity = ndb.StringProperty(indexed=True)
+    name = ndb.StringProperty(indexed=False)
+    created = ndb.LocalStructuredProperty(Stream, repeated=True)
+
 
 class Subscriber(ndb.Model):
-	stream = ndb.KeyProperty(kind=Stream)
-	email = ndb.StringProperty()
+    stream = ndb.KeyProperty(kind=Stream)
+    email = ndb.StringProperty()
+
 
 class AllStreams(ndb.Model):
-	streams = ndb.KeyProperty(repeated=True)
-	names = ndb.StringProperty(repeated=True)
+    streams = ndb.KeyProperty(repeated=True)
+    names = ndb.StringProperty(repeated=True)
+
 
 class MainPage(webapp2.RequestHandler):
-	def get(self):
-		user = users.get_current_user()
+    def get(self):
+        user = users.get_current_user()
 		createdStreams = []
 		subscribedStreams = []
 		numView = []
@@ -89,7 +97,7 @@ class MainPage(webapp2.RequestHandler):
 				allStr.put()
 			userData = query.get()
 			templatePg = 'main.html'
-			
+
 			# Get number of views and pictures of self-owned streams
 			createdStreams = Stream().query(Stream.ownerEmail == user.email())
 			for elem in createdStreams:
@@ -105,7 +113,7 @@ class MainPage(webapp2.RequestHandler):
 				imgCount = Image.query(Image.stream == elem.stream).count(limit=None)
 				numView_sub.append(viewCount)
 				numImg_sub.append(imgCount)
-			
+
 			my_group_list = zip(createdStreams, numView, numImg)
 			sub_group_list = zip(subscribedStreams, numView_sub, numImg_sub)
 			template_values = {
@@ -120,13 +128,10 @@ class MainPage(webapp2.RequestHandler):
 			logging.log(20, 'No user found')
 			template_values = {'url': url}
 
-		#for st in allStr.streams:
-			#logging.log(20, st)
-
 		template = JINJA_ENVIRONMENT.get_template(templatePg)
 		self.response.write(template.render(template_values))
 
-	def post(self):
+    def post(self):
 		user = users.get_current_user()
 		userId = user.user_id()
 		query = User.query(User.identity == userId)
@@ -362,18 +367,18 @@ class Subscribe(webapp2.RequestHandler):
 		self.response.write(template.render(template_values))
 
 app = webapp2.WSGIApplication([
-	('/', MainPage),
-	('/create-stream', CreateStream),
-	('/upload', UpLoad),
-	('/view-all', ViewAllStream),
-	('/view_one', ViewOneStream),
-	('/img', ImageHandler),
-	('/subscribe', Subscribe),
-	('/search', Search),
-	('/trending', Trending),
-	('/crontask', CronTask),
-	('/update5', Update5),
-	('/updatehour', UpdateHour),
-	('/updateday', UpdateDay),
-	('/updatelistauto', UpdateListAuto),
+    ('/', MainPage),
+    ('/create-stream', CreateStream),
+    ('/upload', UpLoad),
+    ('/view-all', ViewAllStream),
+    ('/view_one', ViewOneStream),
+    ('/img', ImageHandler),
+    ('/subscribe', Subscribe),
+    ('/search', Search),
+    ('/trending', Trending),
+    ('/crontask', CronTask),
+    ('/update5', Update5),
+    ('/updatehour', UpdateHour),
+    ('/updateday', UpdateDay),
+    ('/updatelistauto', UpdateListAuto),
 ], debug=True)
