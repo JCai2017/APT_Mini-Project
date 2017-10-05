@@ -260,9 +260,9 @@ class CreateStream(webapp2.RequestHandler):
                         'msg': 'Stream name is already in use'
                     }
 
-                template = JINJA_ENVIRONMENT.get_template('create.html')
-                self.response.write(template.render(template_values))
-                return
+                    template = JINJA_ENVIRONMENT.get_template('create.html')
+                    self.response.write(template.render(template_values))
+                    return
 
             link = self.request.get('name')
             link = re.sub(r"[^\w\s]", '', link)
