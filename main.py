@@ -144,13 +144,24 @@ class MainPage(webapp2.RequestHandler):
 					delstream = Stream.query(Stream.name == st.name).get()
 					delstream.key.delete()
 					break
-				i = i + 1
+                                i = i + 1
 
 			del userData.created[i]
+
+                        i = 0
+                        for st in allStr.names:
+                            if st == entry:
+                                break
+
+                            i = i + 1
+
 			key = allStr.streams[i]
 			del allStr.streams[i]
 			del allStr.names[i]
 			key.delete()
+                        logging.log(20, allStr.streams)
+                        logging.log(20, allStr.names)
+                        logging.log(20, i)
 			userData.put()
 			allStr.put()
 
@@ -218,6 +229,7 @@ class CreateStream(webapp2.RequestHandler):
 		userData = query.get()
 		data = User(parent=connex_key())
 		allStr = AllStreams.query().get()
+                logging.log(20, allStr.streams)
 		status = 0
 		link = ''
 		tagsString = self.request.get('tags')
