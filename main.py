@@ -78,8 +78,8 @@ class AllStreams(ndb.Model):
 class MainPage(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
-		createdStreams = []
-		subscribedStreams = []
+        createdStreams = []
+        subscribedStreams = []
 		numView = []
 		numImg = []
 		numView_sub = []
@@ -213,6 +213,7 @@ class MainPage(webapp2.RequestHandler):
 		template = JINJA_ENVIRONMENT.get_template('main.html')
 		self.response.write(template.render(template_values))
 
+
 class CreateStream(webapp2.RequestHandler):
 	def get(self):
 		user = users.get_current_user()
@@ -234,7 +235,7 @@ class CreateStream(webapp2.RequestHandler):
 		userData = query.get()
 		data = User(parent=connex_key())
 		allStr = AllStreams.query().get()
-                logging.log(20, allStr.streams)
+        logging.log(20, allStr.streams)
 		status = 0
 		link = ''
 		tagsString = self.request.get('tags')
@@ -262,7 +263,7 @@ class CreateStream(webapp2.RequestHandler):
 			link = re.sub(r"\s", '-', link)
 			link = '/?' + link
 			stream = Stream(name=stName, ownerEmail=email,
-							url=link, coverImage=self.request.get('image'))
+                            url=link, coverImage=self.request.get('image'))
 			stream.put()
 			userData.created.append(stream)
 			status = userData.put()
@@ -297,7 +298,7 @@ class CreateStream(webapp2.RequestHandler):
 			link = re.sub(r"\s", '-', link)
 			link = '/?' + link
 			stream = Stream(name=stName, ownerEmail=email,
-							url=link, coverImage=self.request.get('image'))
+                            url=link, coverImage=self.request.get('image'))
 			stream.put()
 			data.created.append(stream)
 			status = data.put()
@@ -335,8 +336,9 @@ class CreateStream(webapp2.RequestHandler):
 					else:
 						message.body = "You are invited to my stream! \nby " + user.email()
 					message.send()
-		
+
 		self.redirect('/')
+
 
 class Subscribe(webapp2.RequestHandler):
 	def post(self):
