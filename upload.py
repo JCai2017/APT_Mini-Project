@@ -7,6 +7,7 @@ from google.appengine.api import users
 from google.appengine.api import mail
 from google.appengine.ext import ndb
 from google.appengine.api import images
+from google.net.proto.ProtocolBuffer import ProtocolBufferDecodeError
 
 import jinja2
 import webapp2
@@ -71,20 +72,26 @@ class ViewAllStream(webapp2.RequestHandler):
 class ViewOneStream(webapp2.RequestHandler):
 	def get(self):
 		user = users.get_current_user()
-		streamKey = ndb.Key(urlsafe=self.request.get('streamKey'))
-		stream = streamKey.get()
-
-		imgList = Image.query(Image.stream == streamKey).order(-Image.time).fetch(3)
-		ownerCheck = 'notOwner'
-		if stream.ownerEmail == user.email():
-			ownerCheck = 'isOwner'
-
-		template = JINJA_ENVIRONMENT.get_template('viewOneStream.html')
-		self.response.write(template.render(streamKey = streamKey, images = imgList, ownerCheck = ownerCheck, user = user))
 		
-		view = View()
-		view.stream = streamKey
-		view.put()
+		try:
+			streamKey = ndb.Key(urlsafe=self.request.get('streamKey'))
+			stream = streamKey.get()
+
+			imgList = Image.query(Image.stream == streamKey).order(-Image.time).fetch(3)
+			ownerCheck = 'notOwner'
+			if stream.ownerEmail == user.email():
+				ownerCheck = 'isOwner'
+
+			template = JINJA_ENVIRONMENT.get_template('viewOneStream.html')
+			self.response.write(template.render(streamKey = streamKey, images = imgList, ownerCheck = ownerCheck, user = user))
+		
+			view = View()
+			view.stream = streamKey
+			view.put()
+		except TypeError:
+			self.redirect('error?errorType=2')
+		except ProtocolBufferDecodeError:
+			self.redirect('error?errorType=3')
 
 	def post(self):
 		user = users.get_current_user()
