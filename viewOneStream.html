@@ -1,32 +1,112 @@
 {% extends "base.html" %}
 {% block title %}View_single{% endblock %}
+{% block dropstyle %}
+<style>
+  /* The total progress gets shown by event listeners */
+  #total-progress {
+    opacity: 0;
+    transition: opacity 0.3s linear;
+  }
+
+  /* Hide the progress bar when finished */
+  #previews .file-row.dz-success .progress {
+    opacity: 0;
+    transition: opacity 0.3s linear;
+  }
+
+  /* Hide the delete button initially */
+  #previews .file-row .delete {
+    display: none;
+  }
+
+  /* Hide the start and cancel buttons and show the delete button */
+
+  #previews .file-row.dz-success .start,
+  #previews .file-row.dz-success .cancel {
+    display: none;
+  }
+  #previews .file-row.dz-success .delete {
+    display: block;
+  }
+
+</style>
+{% endblock %}
 {% block content %}
 
 <div class="row">
-<table>
-<tr>
   {% if ownerCheck|string() == 'isOwner' %}
-  <td><form action="/upload?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
-    <div><label for="image_uploads">Choose images to upload!</label>
-	<input type="file" id="image_uploads" name="img"/></div>
-	<div class="preview">
-		<p>No files currently selected for upload</p>
-	</div>
-    <div class="addbt"><input class="btn btn-default" type="submit" value="Add Image"></div>
-  </form></td>
+  <div id="actions" class="row">
+    <div class="col-xs-5">
+    <!-- The fileinput-button span is used to style the file input field as button -->
+      <span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Add files...</span>
+      </span>
+      <button type="submit" class="btn btn-primary start">
+        <i class="glyphicon glyphicon-upload"></i>
+        <span>Start upload</span>
+      </button>
+      <button type="reset" class="btn btn-warning cancel">
+        <i class="glyphicon glyphicon-ban-circle"></i>
+        <span>Clear Upload Queue</span>
+      </button>
+    </div>
+  </div>
+  <div class="col-xs-12">
+  <!-- The global file processing state -->
+    <span class="fileupload-process">
+      <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+      </div>
+    </span>
+  </div>
+
+  <div class="row" class="files" id="previews">
+    <div id="template" class="file-row col-xs-4">
+      <!-- This is used as the file preview template -->
+      <div>
+        <span class="preview"><img data-dz-thumbnail /></span>
+      </div>
+      <div>
+        <p class="name" data-dz-name></p>
+        <strong class="error text-danger" data-dz-errormessage></strong>
+      </div>
+      <div>
+        <p class="size" data-dz-size></p>
+        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-primary start">
+          <i class="glyphicon glyphicon-upload"></i>
+          <span>Start</span>
+        </button>
+        <button data-dz-remove class="btn btn-warning cancel">
+          <i class="glyphicon glyphicon-ban-circle"></i>
+          <span>Cancel</span>
+        </button>
+        <button data-dz-remove class="btn btn-danger delete">
+          <i class="glyphicon glyphicon-trash"></i>
+          <span>Clear! Click Me!</span>
+        </button>
+        <div class="row" style="margin-top: 20px">
+        </div>
+      </div>
+    </div>
+  </div>
+
   {% else %}
-  <td><form id="multipleupload" action="/subscribe?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
+  <form id="multipleupload" action="/subscribe?streamKey={{streamKey.urlsafe()}}" enctype="multipart/form-data" method="post">
     <input class="btn btn-default" type="submit" value="Subscribe">
-  </form></td>
+  </form>
   {% endif %}
 {% if streamKey.get().coverImage %}
-<td height="300" width="300">
-	<!--<div class="col-sm-6 col-md-4">-->
+	<div class="col-sm-6 col-md-4">
 		<img class="img-responsive center-block" src="{{streamKey.get().coverImage}}" alt="{{streamKey.get().name}}" width="300" height="300">
-	<!--</div>-->
-	</td>
+	</div>
 {% endif  %}
-</tr></table></div>
+</div>
 <div class="row">
 {% if images %}
   <form action="/view_one?streamKey={{streamKey.urlsafe()}}" method="post">
@@ -45,52 +125,62 @@
 {% endif %}
 </div>
 <br>
-<style>
-form label {
-	background-color: #7F9CCB;
-	padding: 5px 10px;
-	border-radius: 5px;
-	border: 1px ridge black;
-	font-size: 1.2rem;
-	height: auto;
-}
-form label:hover {
-	background-color: #2D5BA3;
-	color: white;
-}
-form label:active {
-	background-color: #0D3F8F;
-	color: white;
-}
-</style>
-<script>
-	var input = document.querySelector('#image_uploads');
-	var addbt = document.querySelector('.addbt');
-	var preview = document.querySelector('.preview');
-	addbt.style.visibility = 'hidden';
-	input.style.visibility = 'hidden';
-	input.addEventListener('change', updateButton);
-	function updateButton() {
-		while(preview.firstChild) {
-			preview.removeChild(preview.firstChild);
-		}
-		var curFiles = input.files;
-		if(curFiles.length == 0) {
-			var para = document.createElement('p');
-			para.textContent = 'No files currently selected for upload';
-			preview.appendChild(para);
-		} else {
-			addbt.style.visibility = 'visible';
-			var list = document.createElement('ol');
-			preview.appendChild(list);
-			for(var i=0; i<curFiles.length; i++) {
-				var listItem = document.createElement('li');
-				var para = document.createElement('p');
-				para.textContent = 'File name ' + curFiles[i].name + ".";
-				listItem.appendChild(para);
-				list.appendChild(listItem);
-			}
-		}
-	}
+<script type="text/javascript">
+  var loc = "";
+  var previewNode = document.querySelector("#template");
+  previewNode.id="";
+  var previewTemplate = previewNode.parentNode.innerHTML;
+  previewNode.parentNode.removeChild(previewNode);
+
+  var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+    url: "/upload?streamKey={{streamKey.urlsafe()}}", // Set the url
+    thumbnailWidth: 80,
+    thumbnailHeight: 80,
+    parallelUploads: 20,
+    paramName: "img",
+    previewTemplate: previewTemplate,
+    autoQueue: false, // Make sure the files aren't queued until manually added
+    previewsContainer: "#previews", // Define the container to display the previews
+    clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+  });
+
+  myDropzone.on("addedfile", function(file) {
+    // Hookup the start button
+      file.previewElement.querySelector(".start").onclick = function() { myDropzone.enqueueFile(file); };
+  });
+
+// Update the total progress bar
+  myDropzone.on("totaluploadprogress", function(progress) {
+    document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+  });
+
+  myDropzone.on("sending", function(file) {
+// Show the total progress bar when upload starts
+  document.querySelector("#total-progress").style.opacity = "1";
+// And disable the start button
+  file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+  });
+
+// Hide the total progress bar when nothing's uploading anymore
+  myDropzone.on("queuecomplete", function(progress) {
+    document.querySelector("#total-progress").style.opacity = "0";
+	location.reload();
+  });
+
+// Setup the buttons for all transfers
+// The "add files" button doesn't need to be setup because the config
+// `clickable` has already been specified.
+  document.querySelector("#actions .start").onclick = function() {
+    if (myDropzone.getFilesWithStatus(Dropzone.ADDED).length > 0){
+        toastr.success("Upload successfully");
+    }
+    else{
+        toastr.error("You didn't select an image.");
+    }
+    myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+  };
+  document.querySelector("#actions .cancel").onclick = function() {
+    myDropzone.removeAllFiles(true);
+  };
 </script>
 {% endblock %}

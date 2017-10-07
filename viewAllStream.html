@@ -3,26 +3,26 @@
 {% block imagesize%}
 <style>
 .piccontain{
-  height: 300px;
+  /*height: 300px;*/
   position: relative
 }
 .thumbnail img {
-    position: center;
+/*    position: center;
     vertical-align:middle;
-    max-height: 300px;
+    max-height: 300px;*/
 }
 </style>
 {% endblock %}
 {% block content %}
 
-<div class="row animate-box" data-animate-effect="fadeInLeft">
+<div class="row">
   {% for Stream in Streams %}
- <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" work-item>
+ <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
     <div class="thumbnail">
 	<div class='piccontain'>
         <a href="/view_one?streamKey={{Stream.key.urlsafe()}}">
           {% if Stream.coverImage %}
-            <img class="img-responsive center-block" src="{{Stream.coverImage}}" alt="{{Stream.name}}" width="300" height="300">
+            <img class="img-responsive center-block" src="{{Stream.coverImage}}" alt="{{Stream.name}}" height="280">
           {% else %}
             <img class="img-responsive" src="assets/NoCoverAvailable.jpg" alt="No Cover">
           {% endif %}
