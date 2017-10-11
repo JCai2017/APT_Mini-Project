@@ -401,6 +401,7 @@ app = webapp2.WSGIApplication([
     ('/upload', UpLoad),
     ('/view-all', ViewAllStream),
     ('/view_one', ViewOneStream),
+    ('/geo_view', GeoView),
     ('/img', ImageHandler),
     ('/subscribe', Subscribe),
     ('/search', Search),

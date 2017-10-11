@@ -2,6 +2,10 @@
 
 # [START imports]
 import os
+import datetime as dt
+
+from random import uniform
+from datetime import datetime
 
 from google.appengine.api import users
 from google.appengine.api import mail
@@ -36,7 +40,12 @@ class Stream(ndb.Model):
 
 class Image(ndb.Model):
     time = ndb.DateTimeProperty(auto_now_add=True)
+    year = ndb.IntegerProperty()
+    month = ndb.IntegerProperty()
+    day =  ndb.IntegerProperty()
     stream = ndb.KeyProperty(kind=Stream)
+    lat = ndb.IntegerProperty()
+    lon = ndb.IntegerProperty()
     full_size_image = ndb.BlobProperty()
     Thumbnail = ndb.BlobProperty()
 
@@ -51,6 +60,12 @@ class UpLoad(webapp2.RequestHandler):
         streamKey = ndb.Key(urlsafe=self.request.get('streamKey'))
         img = Image()
         img.stream = streamKey
+        today = datetime.now()
+        img.year = today.year
+        img.month = today.month - 1
+        img.day = today.day
+        img.lat = uniform(-90, 90)
+        img.lon = uniform(-180, 180)
         img_temp = self.request.get('img')
         img.Thumbnail = images.resize(img_temp, width=280, height=280,
                                       crop_to_fit=True)
@@ -134,3 +149,24 @@ class ImageHandler(webapp2.RequestHandler):
                                     crop_to_fit=True)
         self.response.headers['Content-Type'] = 'image/png'
         self.response.out.write(markerImage)
+
+
+class GeoView(webapp2.RequestHandler):
+    def get(self):
+        streamKey = ndb.Key(urlsafe=self.request.get('streamKey'))
+        imgList = Image.query(Image.stream == streamKey).order(-Image.time)\
+            .fetch()
+
+        for img in imgList:
+            tmp = images.Image(img.full_size_image)
+            tmp.resize(width=100, height=100)
+            img = tmp
+
+
+        template_values = {
+                'imagesList': imgList
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('geoView.html')
+        self.response.write(template.render(template_values))
+        self.redirect('/geo_view?streamKey='+streamKey.urlsafe())

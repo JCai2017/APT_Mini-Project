@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+      			/* Always set the map height explicitly to define the size of the div
+		         * element that contains the map. */
+	      		#map {
+	        		height: 100%;
+			}
+	        </style>
+		<script src="jquery.js"></script>
+		<script src="jquery-ui-min.js"></script>
+		<script src="jQDateRangeSlider-min.js"></script>
+
+	</head>
+	<body>
+		<div id="map"></div>
+		<div id="slider"></div>
+
+		<script>
+
+			var d = new Date();
+			d.setFullYear(d.getFullYear() - 1);
+			$("#slider").dateRangeSlider({
+				bounds:{min: d, max: new Date()}
+			});
+
+      			var map;
+			var dateVals = $(#dateSlider).dateRangeSlider("values");
+		      	function initMap() {
+	              		map = new google.maps.Map(document.getElementById('map'), {
+			                zoom: 1,
+					center: {lat: 0, lng: 0}
+			    	});
+
+				var images = {{imageList|safe}};
+				var markers = [];
+				var infoWindow = new google.maps.InfoWindow();
+
+				for(i = 0; i < images.length; i ++){
+					var imageDate = new Date(images[i].year, images[i].month, images[i].day);
+					if(imageDate >= dateVals.min && imageDate <= dateVals.max){
+						markers.push(new google.maps.Marker({
+							position: new google.maps.LatLng(images[i].lat, images[i].lon)
+						}));
+
+						google.maps.event.addListener(markers[i], 'click', (function(markers[i], i){
+							return function(){
+								infoWindow.setContent('<img width="100" height="100" src="/img?img_id="' + images[i].key.urlsafe() + 'alt="image">');
+								infoWindow.open(map,markers[i]);
+							}
+						})(markers[i], i));
+
+					}
+				}
+
+				var markerCluster = new MarkerClusterer(map, markers,
+				    {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+	            	}
+    		</script>
+		<script src = ""https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js""></script>
+        	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzbNJD02TdQplYinUreMz_iTGCLMGp1kg&callback=initMap" async defer></script>
+	</body>
+</html>
