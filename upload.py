@@ -3,6 +3,7 @@
 # [START imports]
 import os
 
+from random import uniform
 from google.appengine.api import users
 from google.appengine.api import mail
 from google.appengine.ext import ndb
@@ -65,6 +66,7 @@ class UpLoad(webapp2.RequestHandler):
 		img.Thumbnail = images.resize(img_temp, width=280, height=280,
 									  crop_to_fit=True)
 		img.full_size_image = img.Thumbnail
+                img.geoPt = ndb.GeoPt(uniform(-90, 90), uniform(-180, 180))
 		img.put()
 
 		stream = streamKey.get()
@@ -174,15 +176,16 @@ class Geo_Data(webapp2.RequestHandler):
 		query_begin_date_obj = datetime.datetime.strptime(query_begin_date, "%Y-%m-%dT%H:%M:%S.%fZ")
 		query_end_date_obj = datetime.datetime.strptime(query_end_date, "%Y-%m-%dT%H:%M:%S.%fZ")
 
+                finalList = []
 		imgList = Image.query(Image.stream == streamKey).order(-Image.time).fetch()
 		for img in imgList:
-			if not query_begin_date_obj <= img.time <= query_end_date_obj:
-				imgList.remove(img)
+			if query_begin_date_obj <= img.time <= query_end_date_obj:
+				finalList.append(img)
 
 
 		self.response.headers['Content-Type'] = 'application/json'
 		markers = []
-		for img in imgList:
+                for img in finalList:
 			if img.geoPt is not None:
 				content = '<img src="/markerImg?img_id=' + img.key.urlsafe() + '" alt="image">'
 				markers.append({'latitude': img.geoPt.lat, 'longitude': img.geoPt.lon, 'content': content})
