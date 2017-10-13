@@ -10,6 +10,7 @@
 		<script src="/js/bootstrap.js"></script>
 		<script src="/js/toastr.js"></script>
 		<link type="text/css" rel="stylesheet" href="css/jquery-ui.css">
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui.min.css">
 		<link rel="stylesheet" href="css/bootstrap.css">
 		<link rel="stylesheet" href="css/animate.css">
 		<link type="text/css" rel="stylesheet" href="css/toastr.css">
@@ -47,6 +48,13 @@
 			text-align: center;
 			width: auto;
 		}
+		.ui-autocomplete {
+			z-index: 1050;
+			max-height: 500px;
+			overflow-y: auto;
+			overflow-x: hidden;
+			width: 500px;
+		}
 		</style>
 		<title>{% block title %}{% endblock %}-Page</title>
 	</head>
@@ -62,6 +70,25 @@
 		          <div class= "col-xs-pull-6">
 		            <div class="input-group">
 		              <input type="text" id="query" value="" name="target" class="form-control" placeholder="Ex: NBA, #Food" autocomplete="off">
+					  <script>
+						$(function() {
+						var cache = {}
+							$( "#query" ).autocomplete({
+								source: function(request, response) {
+									var term = request.term;
+									if (term in cache) {
+										response(cache[ term ]);
+										return;
+									}
+
+									$.getJSON("/searchlist?", request, function(data, status, xhr) {
+										cache[ term ] = data;
+										response( data );
+									});
+								}
+							})
+						});
+					  </script>
 		              <span class="input-group-btn">
 		                <button id="search_auto" type="submit" class="btn btn-primary" value="">Search</button>
 		              </span>

@@ -110,7 +110,7 @@
 <div class="row">
 {% if images %}
   <form action="/view_one?streamKey={{streamKey.urlsafe()}}" method="post">
-    <button id="search_btn" type="submit" class="btn btn-primary" value="skiptimes" name="skiptimes">MorePictures</button>
+	<button id="search_btn" type="submit" class="btn btn-primary" value="skiptimes" name="skiptimes">MorePictures</button>
   </form>
   {% for img in images %}
   <div class="col-sm-6 col-md-4">
@@ -123,6 +123,11 @@
   </div>
   {% endfor %}
 {% endif %}
+</div>
+<div class="row">
+<a href="/geo_view?streamKey={{streamKey.urlsafe()}}" data-html="true" data-placement="bottom" class="btn btn-primary btn-xs more" rel="popover" data-content="<small>View the stream in geographic map mode.</small>">
+Geo View
+</a>
 </div>
 <br>
 <script type="text/javascript">
@@ -145,6 +150,10 @@
   });
 
   myDropzone.on("addedfile", function(file) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+          loc = position.coords.latitude.toString() +", "+ position.coords.longitude.toString()
+          $('#addImage input[name=imgLocation]').val(loc);
+    });
     // Hookup the start button
       file.previewElement.querySelector(".start").onclick = function() { myDropzone.enqueueFile(file); };
   });
@@ -159,6 +168,10 @@
   document.querySelector("#total-progress").style.opacity = "1";
 // And disable the start button
   file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+  });
+
+  myDropzone.on("sending", function(file, xhr, formData) {
+    formData.append("imgLocation", loc)
   });
 
 // Hide the total progress bar when nothing's uploading anymore

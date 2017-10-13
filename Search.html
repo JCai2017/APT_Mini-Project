@@ -2,9 +2,11 @@
 {% block title %}Search{% endblock %}
 
 {% block content %}
-
-		<b style="padding-left:16px">Streams I Found</b>
-		<ul>
+<span class="glyphicons glyphicons-search"></span>
+<div class="panel panel-default">
+		<div class="panel-heading">Streams I Found
+			<button class="pull-right" id="rebuildbutton">Rebuild the Index</button>
+		</div>
 		<div class="panel-body">
 		      {% for Stream in Results %}
 		      <div class="col-sm-6 col-md-4">
@@ -20,5 +22,12 @@
 		      </div>
 		      {% endfor %}
 		</div>
-		</ul>
+</div>
+<script type="text/javascript">
+	$('#rebuildbutton').on('click', function() {
+		$.ajax({
+			url: '/updatelistauto',
+		})
+	});
+</script>
 {% endblock %}

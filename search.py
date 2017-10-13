@@ -11,6 +11,7 @@ import jinja2
 import webapp2
 import logging
 import re
+import json
 
 DEFAULT_NAME = 'default_connex'
 
@@ -47,6 +48,9 @@ class Tag(ndb.Model):
     name = ndb.StringProperty()
     stream = ndb.KeyProperty(kind=Stream)
 
+class ListofIndex(ndb.Model):
+	name = ndb.StringProperty()
+	time = ndb.DateTimeProperty(auto_now_add=True)
 
 class Search(webapp2.RequestHandler):
     def get(self):
@@ -59,7 +63,7 @@ class Search(webapp2.RequestHandler):
         searchtarget = self.request.get('target')
         # targetTagList = self.request.get('target').split(', ')
         if len(searchtarget) > 0:
-            name_result = Stream.query(searchtarget == Stream.name).order(
+            name_result = Stream.query(searchtarget == Stream.name).order(\
                                                                 -Stream.time)
             tag_result = Tag.query(searchtarget == Tag.name)
 
@@ -97,3 +101,22 @@ class Search(webapp2.RequestHandler):
         else:
             template = JINJA_ENVIRONMENT.get_template('Search.html')
             self.response.write(template.render())
+
+class SearchList(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'application/json'
+		term = self.request.get('term')
+		result = dict()
+		if len(term) > 0:
+			candidate = ListofIndex.query().order(-ListofIndex.time).fetch()
+			for index in candidate:
+				if term.lower() in index.index.lower():
+					if len(result) >= 20:
+						pass
+					else:
+						result[index.index] = index.index
+				else:
+					pass
+			self.response.write(json.dumps(result))
+		else:
+			self.response.write(json.dumps(result))
