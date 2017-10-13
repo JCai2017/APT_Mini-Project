@@ -1,8 +1,7 @@
 # APT_Mini-Project
 
-# ##################################################################################################
-# #Hello, before deploy to the team gae, remember to change the google map key in the geoView.html.#
-# ##################################################################################################
+# Hello, before deploy to the team gae, remember to change the google map key in the geoView.html.
+# Also, delete all streams on our website, since we add longitude and latitude in Image, we need to re-create streams and upload images.
 
 Be sure to modify the following files:
 1.trending.py - Update5, UpdateHour, UpdateDay: change my email to other email
