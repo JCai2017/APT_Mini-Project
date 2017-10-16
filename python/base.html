@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta name="google-signin-scope" content="profile email">
+		<meta name="google-signin-client_id" content=connex-180814.apps.googleusercontent.com">
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<script src="/js/dropzone.js"></script>
+		<script src="/js/jquery.js"></script>
+		<script src="/js/jquery-ui.js"></script>
+		<script src="/js/bootstrap.js"></script>
+		<script src="/js/toastr.js"></script>
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui.css">
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui.min.css">
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<link rel="stylesheet" href="css/animate.css">
+		<link type="text/css" rel="stylesheet" href="css/toastr.css">
+		{% block dropstyle %}{% endblock %}
+		{% block imagesize %}{% endblock %}
+		<style>
+		body {margin:0;}
+
+		.topnav {
+		 	overflow: hidden;
+		    	background-color: #333;
+		}
+
+		.topnav a {
+	  		float: left;
+		    	display: block;
+			color: #f2f2f2;
+			text-align: center;
+			padding: 14px 16px;
+			text-decoration: none;
+			font-size: 17px;
+		}
+
+		.topnav a:hover {
+		  background-color: #ddd;
+		    color: black;
+		}
+
+		.topnav a.active {
+	    		background-color: #4CAF50;
+			color: white;
+		}
+		th, td {
+			padding: 5px;
+			text-align: center;
+			width: auto;
+		}
+		.ui-autocomplete {
+			z-index: 1050;
+			max-height: 500px;
+			overflow-y: auto;
+			overflow-x: hidden;
+			width: 500px;
+		}
+		</style>
+		<title>{% block title %}{% endblock %}-Page</title>
+	</head>
+	<body>
+		<div class="topnav">
+			<ul class="nav navbar-nav">
+			<li><a class="active" href="/">Manage</a></li>
+			<li><a href="/create-stream">Create</a></li>
+			<li><a href="/view-all">View</a></li>
+			<li><a href="/trending">Trending</a></li>
+			</ul>
+			<form class="navbar-form navbar-right" action="/search" method="post">
+		          <div class= "col-xs-pull-6">
+		            <div class="input-group">
+		              <input type="text" id="query" value="" name="target" class="form-control" placeholder="Ex: NBA, #Food" autocomplete="off">
+					  <script>
+						$(function() {
+						var cache = {}
+							$( "#query" ).autocomplete({
+								source: function(request, response) {
+									var term = request.term;
+									if (term in cache) {
+										response(cache[ term ]);
+										return;
+									}
+
+									$.getJSON("/searchlist?", request, function(data, status, xhr) {
+										cache[ term ] = data;
+										response( data );
+									});
+								}
+							})
+						});
+					  </script>
+		              <span class="input-group-btn">
+		                <button id="search_auto" type="submit" class="btn btn-primary" value="">Search</button>
+		              </span>
+		            </div><!-- /input-group -->
+		          </div>
+		        </form>
+		</div>
+		<div style="padding-left:16px">
+			<h1><strong>Hi {{ user.nickname() }} <br>Welcome to Connexus</strong></h1>
+			<a href="{{url}}" onclick="signOut()">Sign Out</a>
+			<script>
+			function signOut(){
+				var auth2 = gapi.auth2.getAuthInstance();
+				auth2.signOut().then(function(){
+					console.log('User signed out.');
+				});
+			}
+			</script>
+		</div>
+		<div id="content">
+			<div class="container">{% block content %}{% endblock %}</div>
+		</div>
+		<br/>
+		<br/>
+    </body>
+</html>

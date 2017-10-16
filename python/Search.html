@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<span class="glyphicons glyphicons-search"></span>
+<div class="panel panel-default">
+		<div class="panel-heading">Streams I Found
+			<button class="pull-right" id="rebuildbutton">Rebuild the Index</button>
+		</div>
+		<div class="panel-body">
+		      {% for Stream in Results %}
+		      <div class="col-sm-6 col-md-4">
+			<div class="thumbnail">
+			  <a href="/view_one?streamKey={{Stream.key.urlsafe()}}">
+			    <img src="{{Stream.coverImage}}" alt="{{Stream.name}}">
+			  </a>
+			  <div class="caption">
+			    <h3>{{Stream.name}}</h3>
+			    <p>Created by {{Stream.ownerEmail}}</p>
+			  </div>
+			</div>
+		      </div>
+		      {% endfor %}
+		</div>
+</div>
+<script type="text/javascript">
+	$('#rebuildbutton').on('click', function() {
+		$.ajax({
+			url: '/updatelistauto',
+		})
+	});
+</script>
+{% endblock %}
