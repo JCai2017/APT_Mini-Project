@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "780624470720",
+    "project_id": "connex-180814"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780624470720:android:6586ac8924124d79",
+        "android_client_info": {
+          "package_name": "ee382apt.connex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780624470720-er5mrcg6mmsm6jef007jssc67228jmvu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ee382apt.connex",
+            "certificate_hash": "929e185b5e1753f102309fb0e49d312204ea19c1"
+          }
+        },
+        {
+          "client_id": "780624470720-thva4rmvip3a6sf1gjetm894ijcu0nj1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8YwEvRxQbL4epYSVFJcAjKMgAe8hSnzc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
