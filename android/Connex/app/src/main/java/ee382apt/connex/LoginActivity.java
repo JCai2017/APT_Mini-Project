@@ -65,15 +65,19 @@ public class LoginActivity extends AppCompatActivity implements
         Log.d(TAG, "handleSignInResult" + result.isSuccess());
         if(result.isSuccess()){
             GoogleSignInAccount acct = result.getSignInAccount();
-            //Switch to Main Activiy
-        }else {
-
+            //Switch to View Streams
+            viewStreams();
         }
     }
 
     private void signIn(){
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void viewStreams(){
+        Intent intent = new Intent(this, SearchResultsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -88,6 +92,9 @@ public class LoginActivity extends AppCompatActivity implements
         switch (v.getId()) {
             case R.id.sign_in_button:
                 signIn();
+                break;
+            case R.id.button2:
+                viewStreams();
                 break;
         }
     }
