@@ -86,8 +86,12 @@ class API(webapp2.RequestHandler):
             keys = []
 
             for streams in lst:
-                result_list.append(streams.url)
-                image_list.append(streams.coverImage)
+                #Replace with proper method of getting the stream key
+                result_list.append('/view_one?streamKey=')
+                if streams.coverImage:
+                    image_list.append(streams.coverImage)
+                else:
+                    image_list.append('None')
                 titles.append(streams.name)
                 keys.append(streams.key)
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,6 +19,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,21 +66,35 @@ public class SearchResultsActivity extends AppCompatActivity implements
         });
     }
 
+    public void populateListView(){
+        mList.clear();
+        for(int i = 0; i < resp.resultImages.size(); i ++){
+            mList.add(resp.resultImages.get(i));
+            mTitles.add(resp.titles.get(i));
+
+            mImageListAdapter = new ImageListAdapter(this, mList, mTitles);
+            mListView.setAdapter(mImageListAdapter);
+        }
+    }
+
     public void getResults(){
         EditText editText = (EditText) findViewById(R.id.editText);
         String query = editText.getText().toString();
+        query = query.replaceAll("\\s+", "%20");
         String url = API_BASE_URL + query;
 
         requestQueue = Volley.newRequestQueue(this);
-        Log.d("CREATION", "Starting request");
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>(){
                     @Override
                     public void onResponse(String response) {
+                        JsonParser parser = new JsonParser();
+                        JsonObject json = (JsonObject)parser.parse(response);
                         Gson gson = new Gson();
-                        resp = gson.fromJson(response, Resp.class);
-                        Log.d("CREATION", "Response: " + response);
+                        resp = gson.fromJson(json, Resp.class);
+
+                        populateListView();
                     }
                 },
                 new Response.ErrorListener() {
@@ -90,24 +107,14 @@ public class SearchResultsActivity extends AppCompatActivity implements
 
         requestQueue.add(stringRequest);
 
-        while(resp.resultImages.size() == 0){}
 
-        for(int i = 0; i < resp.resultImages.size(); i ++){
-            mList.add(resp.resultImages.get(i));
-            mTitles.add(resp.titles.get(i));
-        }
-
-        mImageListAdapter = new ImageListAdapter(this, mList, mTitles);
-        mListView.setAdapter(mImageListAdapter);
-
-
-        if (android.os.Build.VERSION.SDK_INT >= 11){
+        /*if (android.os.Build.VERSION.SDK_INT >= 11){
             recreate();
         }else{
             Intent intent = getIntent();
             finish();
             startActivity(intent);
-        }
+        }*/
     }
 
     public void onClick(View v) {
