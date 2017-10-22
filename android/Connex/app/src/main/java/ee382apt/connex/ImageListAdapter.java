@@ -46,8 +46,14 @@ public class ImageListAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent){
         View v = View.inflate(mContext, R.layout.list_item, null);
         NetworkImageView img = (NetworkImageView)v.findViewById(R.id.network_img_view);
-        mImageLoader.get(listURL.get(position), ImageLoader.getImageListener(img, R.mipmap.ic_launcher, android.R.drawable.alert_dark_frame));
-        img.setImageUrl(listURL.get(position), mImageLoader);
+        if(listURL.get(position).equals("None")){
+            //TODO: replace listUrl.get(position) below with URL for no cover image url
+            mImageLoader.get(listURL.get(position), ImageLoader.getImageListener(img, R.mipmap.ic_launcher, android.R.drawable.alert_dark_frame));
+            img.setImageUrl(listURL.get(position), mImageLoader);
+        }else {
+            mImageLoader.get(listURL.get(position), ImageLoader.getImageListener(img, R.mipmap.ic_launcher, android.R.drawable.alert_dark_frame));
+            img.setImageUrl(listURL.get(position), mImageLoader);
+        }
 
         TextView txt = (TextView)v.findViewById(R.id.str_title);
         txt.setText(titles.get(position));

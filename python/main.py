@@ -410,7 +410,7 @@ class ErrorPage(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
 	('/', MainPage),
-        ('/api', API)
+        ('/api', API),
 	('/create-stream', CreateStream),
 	('/upload', UpLoad),
 	('/view-all', ViewAllStream),

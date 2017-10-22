@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -25,10 +26,10 @@ public class SearchResultsActivity extends AppCompatActivity implements
         View.OnClickListener{
 
     private static class Resp{
-        String[] resultUrls;
-        String[] resultImages;
-        String[] titles;
-        String[] keys;
+        ArrayList<String> resultUrls = new ArrayList<String>();
+        ArrayList<String> resultImages = new ArrayList<String>();
+        ArrayList<String> titles = new ArrayList<String>();
+        ArrayList<String> keys = new ArrayList<String>();
     }
 
     private static final String API_BASE_URL = "https://connex-180814.appspot.com/api?target=";
@@ -36,6 +37,8 @@ public class SearchResultsActivity extends AppCompatActivity implements
     private static ListView mListView;
     private static ImageListAdapter mImageListAdapter;
     private static List<String> mList, mTitles;
+    private static final String TAG = "MyTag";
+    private RequestQueue requestQueue;
 
 
     @Override
@@ -43,7 +46,9 @@ public class SearchResultsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
         mListView = (ListView)findViewById(R.id.list);
-        mList = new ArrayList<>();
+        mList = new ArrayList<String>();
+        mTitles = new ArrayList<String>();
+        resp = new Resp();
 
         findViewById(R.id.search_button).setOnClickListener(this);
 
@@ -63,7 +68,8 @@ public class SearchResultsActivity extends AppCompatActivity implements
         String query = editText.getText().toString();
         String url = API_BASE_URL + query;
 
-        RequestQueue queue = Volley.newRequestQueue(this);
+        requestQueue = Volley.newRequestQueue(this);
+        Log.d("CREATION", "Starting request");
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>(){
@@ -71,6 +77,7 @@ public class SearchResultsActivity extends AppCompatActivity implements
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         resp = gson.fromJson(response, Resp.class);
+                        Log.d("CREATION", "Response: " + response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -79,10 +86,15 @@ public class SearchResultsActivity extends AppCompatActivity implements
                     }
         });
 
+        stringRequest.setTag(TAG);
 
-        for(int i = 0; i < resp.resultImages.length; i ++){
-            mList.add(resp.resultImages[i]);
-            mTitles.add(resp.titles[i]);
+        requestQueue.add(stringRequest);
+
+        while(resp.resultImages.size() == 0){}
+
+        for(int i = 0; i < resp.resultImages.size(); i ++){
+            mList.add(resp.resultImages.get(i));
+            mTitles.add(resp.titles.get(i));
         }
 
         mImageListAdapter = new ImageListAdapter(this, mList, mTitles);
@@ -103,6 +115,14 @@ public class SearchResultsActivity extends AppCompatActivity implements
             case R.id.search_button:
                 getResults();
                 break;
+        }
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        if(requestQueue != null){
+            requestQueue.cancelAll(TAG);
         }
     }
 }

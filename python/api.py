@@ -27,53 +27,54 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 # [END imports]
 
 class Stream(ndb.Model):
-	name = ndb.StringProperty(indexed=True)
-	ownerEmail = ndb.StringProperty()
-	url = ndb.StringProperty()
-	coverImage = ndb.StringProperty()
-	lastUpdate = ndb.DateProperty(auto_now=True)
-	time = ndb.DateTimeProperty(auto_now_add=True)
+    name = ndb.StringProperty(indexed=True)
+    ownerEmail = ndb.StringProperty()
+    url = ndb.StringProperty()
+    coverImage = ndb.StringProperty()
+    lastUpdate = ndb.DateProperty(auto_now=True)
+    time = ndb.DateTimeProperty(auto_now_add=True)
 
 
 class Image(ndb.Model):
-	time = ndb.DateTimeProperty(auto_now_add=True)
-	stream = ndb.KeyProperty(kind=Stream)
-	full_size_image = ndb.BlobProperty()
-	Thumbnail = ndb.BlobProperty()
-	geoPt = ndb.GeoPtProperty()
+    time = ndb.DateTimeProperty(auto_now_add=True)
+    stream = ndb.KeyProperty(kind=Stream)
+    full_size_image = ndb.BlobProperty()
+    Thumbnail = ndb.BlobProperty()
+    geoPt = ndb.GeoPtProperty()
 
 class Tag(ndb.Model):
-	name = ndb.StringProperty()
-	stream = ndb.KeyProperty(kind=Stream)
+    name = ndb.StringProperty()
+    stream = ndb.KeyProperty(kind=Stream)
 
 
 class View(ndb.Model):
-	stream = ndb.KeyProperty(kind=Stream)
-	time = ndb.DateTimeProperty(auto_now_add=True)
+    stream = ndb.KeyProperty(kind=Stream)
+    time = ndb.DateTimeProperty(auto_now_add=True)
 
 
 class User(ndb.Model):
-	identity = ndb.StringProperty(indexed=True)
-	name = ndb.StringProperty(indexed=False)
-	created = ndb.LocalStructuredProperty(Stream, repeated=True)
+    identity = ndb.StringProperty(indexed=True)
+    name = ndb.StringProperty(indexed=False)
+    created = ndb.LocalStructuredProperty(Stream, repeated=True)
 
 
 class Subscriber(ndb.Model):
-	stream = ndb.KeyProperty(kind=Stream)
-	email = ndb.StringProperty()
+    stream = ndb.KeyProperty(kind=Stream)
+    email = ndb.StringProperty()
 
 
 class AllStreams(ndb.Model):
-	streams = ndb.KeyProperty(repeated=True)
-	names = ndb.StringProperty(repeated=True)
+    streams = ndb.KeyProperty(repeated=True)
+    names = ndb.StringProperty(repeated=True)
 
 class API(webapp2.RequestHandler):
     def get(self):
-        response = {'resultUrls': [], 'resultImages': [], 'titles': [], 'keys': []}
-        queries = parse_qs(urlparse(self).query)
-        if 'target' in queries:
+        response = {'resultUrls': [], 'resultImages': [], 'titles': []}
+        queries = self.request.get('target')
+        if queries:
+            logging.log(20, "I'M IN!!!!!!!!")
             streamSet = set()
-            searchName = queries['target']
+            searchName = self.request.get('target')
             name_result = Stream.query(searchName == Stream.name).order(\
                                                              -Stream.time)
             tag_result = Tag.query(searchName == Tag.name)
@@ -107,16 +108,19 @@ class API(webapp2.RequestHandler):
                         pass
                     else:
                         streamSet.add(key_of_stream)
-                        result_list.append(key_of_stream.get().url)
-                        image_list.append(key_of_stream.get().coverImage)
+                        #Replace with proper method of getting the stream key
+                        result_list.append('/view_one?streamKey=')
+                        if key_of_stream.get().coverImage:
+                            image_list.append(key_of_stream.get().coverImage)
+                        else:
+                            image_list.append('None')
                         titles.append(key_of_stream.get().names)
-                        keys.append(key_of_stream)
                         i = i + 1
 
             response['resultUrls'] = result_list
             response['resultImages'] = image_list
             response['titles'] = titles
-            response['keys'] = keys
 
+        logging.log(20, response)
         r = json.dumps(response)
         self.response.write(r)
