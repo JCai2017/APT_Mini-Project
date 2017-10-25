@@ -80,6 +80,9 @@ public class SearchResultsActivity extends AppCompatActivity implements
     public void getResults(){
         EditText editText = (EditText) findViewById(R.id.editText);
         String query = editText.getText().toString();
+        if(query.equals("")){
+            return;
+        }
         query = query.replaceAll("\\s+", "%20");
         String url = API_BASE_URL + query;
 
