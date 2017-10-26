@@ -47,9 +47,8 @@ public class ImageListAdapter extends BaseAdapter{
         View v = View.inflate(mContext, R.layout.list_item, null);
         NetworkImageView img = (NetworkImageView)v.findViewById(R.id.network_img_view);
         if(listURL.get(position).equals("None")){
-            //TODO: replace listUrl.get(position) below with URL for no cover image url
-            mImageLoader.get(listURL.get(position), ImageLoader.getImageListener(img, R.mipmap.ic_launcher, android.R.drawable.alert_dark_frame));
-            img.setImageUrl(listURL.get(position), mImageLoader);
+            mImageLoader.get("http://connex-180814.appspot.com/assets/NoCoverAvailable.jpg", ImageLoader.getImageListener(img, R.mipmap.ic_launcher, android.R.drawable.alert_dark_frame));
+            img.setImageUrl("http://connex-180814.appspot.com/assets/NoCoverAvailable.jpg", mImageLoader);
         }else {
             mImageLoader.get(listURL.get(position), ImageLoader.getImageListener(img, R.mipmap.ic_launcher, android.R.drawable.alert_dark_frame));
             img.setImageUrl(listURL.get(position), mImageLoader);
