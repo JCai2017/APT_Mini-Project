@@ -12,21 +12,29 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+
+import java.util.ArrayList;
+
 public class ImageGridAdapter extends BaseAdapter {
 
     private final Context mContext;
-    private final String[] streamIDs;
-
+    private final ArrayList<String> names;
+    private final ArrayList<String> urls;
+    private ImageLoader mImageLoader;
     // 1
-    public ImageGridAdapter(Context context, String[] sIDs) {
+    public ImageGridAdapter(Context context, ArrayList<String> names, ArrayList<String> img) {
         this.mContext = context;
-        this.streamIDs = sIDs;
+        this.names = names;
+        this.urls = img;
+        this.mImageLoader = CustomVolleyRequestQueue.geInstance(context).getImageLoader();
     }
 
     // 2
     @Override
     public int getCount() {
-        return streamIDs.length;
+        return urls.size();
     }
 
     // 3
@@ -45,20 +53,23 @@ public class ImageGridAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        //streamIDs[position];
+        View v = View.inflate(mContext, R.layout.linearlayout_book, null);
 
-        if (convertView == null) {
-            final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-            convertView = layoutInflater.inflate(R.layout.linearlayout_book, null);
+
+        final TextView nameTextView = (TextView)v.findViewById(R.id.grid_item_label);
+
+        NetworkImageView img = (NetworkImageView)v.findViewById(R.id.grid_item_img);
+        if(urls.get(position).equals("None")){
+            mImageLoader.get("http://connex-180814.appspot.com/assets/NoCoverAvailable.jpg",
+                    ImageLoader.getImageListener(img, R.mipmap.ic_launcher, android.R.drawable.alert_dark_frame));
+            img.setImageUrl("http://connex-180814.appspot.com/assets/NoCoverAvailable.jpg", mImageLoader);
+        } else {
+            mImageLoader.get(urls.get(position), ImageLoader.getImageListener(img, R.mipmap.ic_launcher,
+                    android.R.drawable.alert_dark_frame));
+            img.setImageUrl(urls.get(position), mImageLoader);
         }
-
-        final ImageView imageView = (ImageView)convertView.findViewById(R.id.grid_item_image);
-        final TextView nameTextView = (TextView)convertView.findViewById(R.id.grid_item_label);
-
-        //imageView.setImageResource();
-        //nameTextView.setText();
-
-        return convertView;
+        nameTextView.setText(names.get(position));
+        return v;
     }
 
     //private

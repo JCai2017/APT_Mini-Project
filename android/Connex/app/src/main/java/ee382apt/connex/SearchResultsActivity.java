@@ -69,6 +69,8 @@ public class SearchResultsActivity extends AppCompatActivity implements
 
     public void populateListView(){
         mList.clear();
+        mTitles.clear();
+        mKeys.clear();
         for(int i = 0; i < resp.resultImages.size(); i ++){
             mList.add(resp.resultImages.get(i));
             mTitles.add(resp.titles.get(i));
