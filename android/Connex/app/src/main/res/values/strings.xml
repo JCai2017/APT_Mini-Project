@@ -15,4 +15,11 @@
         completions."
     </string>
     <string name="edit_message">Search for a Stream</string>
+
+    <string name="connexus">Connexus</string>
+    <string name="choose_from_library">Choose From Library</string>
+    <string name="useCamera">Use camera</string>
+    <string name="uploadImage">Upload Image</string>
+    <string name="upload_hint">Add a caption for photo</string>
+    <string name="title_activity_image_upload">ImageUpload</string>
 </resources>

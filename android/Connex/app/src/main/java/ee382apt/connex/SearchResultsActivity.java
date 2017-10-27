@@ -1,16 +1,12 @@
 package ee382apt.connex;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ListViewCompat;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,14 +31,14 @@ public class SearchResultsActivity extends AppCompatActivity implements
         ArrayList<String> keys = new ArrayList<String>();
     }
 
-    private static final String API_BASE_URL = "https://connex-180814.appspot.com/api?target=";
+    private static final String API_BASE_URL = "https://apt-fall2017.appspot.com/api?target=";
     Resp resp;
     private static ListView mListView;
     private static ImageListAdapter mImageListAdapter;
-    private static List<String> mList, mTitles;
+    private static List<String> mList, mTitles, mKeys;
     private static final String TAG = "MyTag";
     private RequestQueue requestQueue;
-
+    private static String email = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +47,9 @@ public class SearchResultsActivity extends AppCompatActivity implements
         mListView = (ListView)findViewById(R.id.list);
         mList = new ArrayList<String>();
         mTitles = new ArrayList<String>();
+        mKeys = new ArrayList<String>();
         resp = new Resp();
+        email = getIntent().getStringExtra("userEmail");
 
         findViewById(R.id.search_button).setOnClickListener(this);
 
@@ -60,8 +58,11 @@ public class SearchResultsActivity extends AppCompatActivity implements
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Switch to View Image Activity with stream key
                 //TODO: replace LoginActivity with name of View Stream activity class
-                Intent intent = new Intent(view.getContext(), LoginActivity.class);
-                startActivity(intent);
+                Intent it = new Intent(view.getContext(), ImageUploadActivity.class);
+                it.putExtra("streamKey", mKeys.get(i));
+                it.putExtra("streamName", mTitles.get(i));
+                it.putExtra("userEmail", email);
+                startActivity(it);
             }
         });
     }
@@ -71,7 +72,7 @@ public class SearchResultsActivity extends AppCompatActivity implements
         for(int i = 0; i < resp.resultImages.size(); i ++){
             mList.add(resp.resultImages.get(i));
             mTitles.add(resp.titles.get(i));
-
+            mKeys.add(resp.resultUrls.get(i));
             mImageListAdapter = new ImageListAdapter(this, mList, mTitles);
             mListView.setAdapter(mImageListAdapter);
         }

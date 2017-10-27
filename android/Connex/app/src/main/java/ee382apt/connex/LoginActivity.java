@@ -1,13 +1,10 @@
 package ee382apt.connex;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.View;
-import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -17,12 +14,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+
 public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
     private GoogleApiClient mGoogleApiClient;
-
+    private static String email = null;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
@@ -66,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements
         if(result.isSuccess()){
             GoogleSignInAccount acct = result.getSignInAccount();
             //Switch to View Streams
+            email = acct.getEmail();
             viewStreams();
         }
     }
@@ -77,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void viewStreams(){
         Intent intent = new Intent(this, SearchResultsActivity.class);
+        intent.putExtra("userEmail", email);
         startActivity(intent);
     }
 

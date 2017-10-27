@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'key0'
             keyPassword 'pass4access'
-            storeFile file('C:/Users/caiju/Documents/ClassDocuments/EE382VAPT/APT_Mini-Project/android/Connex/jason_keys.jks')
+            storeFile file('D:/AndroidStudioProject/Connex/jason_keys.jks')
             storePassword 'pass4key'
         }
     }
@@ -40,8 +40,10 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
     compile 'com.google.android.gms:play-services-auth:9.8.0'
+    compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.google.code.gson:gson:2.8.2'
+    compile 'pub.devrel:easypermissions:0.2.1'
     testCompile 'junit:junit:4.12'
 }
 

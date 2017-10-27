@@ -16,6 +16,7 @@ import json
 
 from api import API
 from upload import UpLoad
+from upload import Add_Image_mobile
 from upload import ViewAllStream
 from upload import ViewOneStream
 from upload import ImageHandler
@@ -410,7 +411,7 @@ class ErrorPage(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
 	('/', MainPage),
-        ('/api', API),
+		('/api', API),
 	('/create-stream', CreateStream),
 	('/upload', UpLoad),
 	('/view-all', ViewAllStream),
@@ -428,5 +429,6 @@ app = webapp2.WSGIApplication([
 	('/updatehour', UpdateHour),
 	('/updateday', UpdateDay),
 	('/updatelistauto', UpdateListAuto),
-	('error', ErrorPage),
+	('/error', ErrorPage),
+	('/Add_Image_mobile', Add_Image_mobile),
 ], debug=True)
