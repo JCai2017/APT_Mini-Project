@@ -31,7 +31,7 @@ public class SearchResultsActivity extends AppCompatActivity implements
         ArrayList<String> keys = new ArrayList<String>();
     }
 
-    private static final String API_BASE_URL = "https://apt-fall2017.appspot.com/api?target=";
+    private static final String API_BASE_URL = "https://connex-180814.appspot.com/api?target=";
     Resp resp;
     private static ListView mListView;
     private static ImageListAdapter mImageListAdapter;

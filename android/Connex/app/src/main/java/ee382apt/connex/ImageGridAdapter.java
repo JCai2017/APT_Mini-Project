@@ -45,7 +45,7 @@ public class ImageGridAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        streamIDs[position];
+        //streamIDs[position];
 
         if (convertView == null) {
             final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
@@ -55,12 +55,12 @@ public class ImageGridAdapter extends BaseAdapter {
         final ImageView imageView = (ImageView)convertView.findViewById(R.id.grid_item_image);
         final TextView nameTextView = (TextView)convertView.findViewById(R.id.grid_item_label);
 
-        imageView.setImageResource();
-        nameTextView.setText();
+        //imageView.setImageResource();
+        //nameTextView.setText();
 
         return convertView;
     }
 
-    private
+    //private
 }
 
