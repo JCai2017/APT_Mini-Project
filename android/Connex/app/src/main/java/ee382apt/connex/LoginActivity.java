@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void viewStreams(){
         Intent intent = new Intent(this, ViewAllStreamsActivity.class);
+        intent.putExtra("user_email", email);
         startActivity(intent);
     }
 

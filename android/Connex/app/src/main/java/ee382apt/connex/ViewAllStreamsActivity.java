@@ -1,6 +1,7 @@
 package ee382apt.connex;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -37,7 +38,7 @@ public class ViewAllStreamsActivity extends AppCompatActivity
 
     ImageGridAdapter AllStreamAdapter;
     GridView gridView;
-
+    String email;
     void populateGridView() {
         coverImageHolder.clear();
         namesHolder.clear();
@@ -53,7 +54,7 @@ public class ViewAllStreamsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_streams);
-
+        email = getIntent().getStringExtra("user_email");
         coverImageHolder = new ArrayList<String>();
         namesHolder = new ArrayList<String>();
         resp = new Resp();
@@ -83,8 +84,8 @@ public class ViewAllStreamsActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent it = new Intent(view.getContext(), ViewStreamActivity.class);
                 it.putExtra("streamName", namesHolder.get(i));
+                it.putExtra("user_email", email);
                 startActivity(it);
-
             }
         });
 
@@ -103,6 +104,7 @@ public class ViewAllStreamsActivity extends AppCompatActivity
                 break;
             case R.id.MySubscribedStreamButton:
                 intent = new Intent(this, ViewSubsribedStreamActivity.class);
+                intent.putExtra("user_email", email);
                 startActivity(intent);
                 break;
         }
