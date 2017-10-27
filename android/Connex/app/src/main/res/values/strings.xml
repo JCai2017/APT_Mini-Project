@@ -22,4 +22,10 @@
     <string name="uploadImage">Upload Image</string>
     <string name="upload_hint">Add a caption for photo</string>
     <string name="title_activity_image_upload">ImageUpload</string>
+	<string name="title_activity_camera">CameraActivity</string>
+    <string name="capture">Capture</string>
+    <string name="confirm">Use this</string>
+    <string name="cancel">Cancel</string>
+    <string name="viewAll">View all streams</string>
+    <string name="take_picture">Take picture</string>
 </resources>
