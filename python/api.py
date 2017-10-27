@@ -156,8 +156,7 @@ class StreamAPI(webapp2.RequestHandler):
                         coverImage.append("None")
                     imgs = Image.query(Image.stream == r.key).fetch()
                     for img in imgs:
-                        url = img.Thumbnail.get_serving_url()
-                        images.append(url)
+                        images.append(img.Thumbnail)
 
             response['coverImage'] = coverImage
             response['images'] = images
