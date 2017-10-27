@@ -129,84 +129,33 @@ class API(webapp2.RequestHandler):
 
 class StreamAPI(webapp2.RequestHandler):
     def get(self):
-        response = {'coverImage':[], 'images': [], 'titles': []}
+        response = {'coverImage':[], 'images': [], 'names': []}
         queries = self.request.get('target')
+        names = []
+        images = []
+        coverImage = []
         if queries:
             logging.log(20, "I'M IN!!!!!!!!")
             if queries == "all":
-                titles = []
-                images = []
-                coverImage = []
-                s = Stream.all().order(-Stream.time)
+                s = Stream.query().order(-Stream.time)
                 results = s.fetch(16)
                 for i in results:
-                    titles.append(i.name)
+                    names.append(i.name)
                     coverImage.append(i.coverImage)
-
+            else:
+                sName = queries
+                result = Stream.query(name == sName).fetch(1)
+                for r in result:
+                    names.append(r.name)
+                    coverImage.append(i.coverImage)
+                    imgs = Image.query(stream == r.name).fetch()
+                    for img in imgs:
+                        url = img.get_serving_url()
+                        images.append(url)
 
             response['coverImage'] = coverImage
             response['images'] = images
-            response['titles'] = titles
-
-        logging.log(20, response)
-        r = json.dumps(response)
-        self.response.write(r)
-
-class ImageGeoAPI(webapp2.RequestHandler):
-    def get(self):
-        response = {'images': [], 'titles': []}
-        queries = self.request.get('target')
-        if queries:
-            logging.log(20, "I'M IN!!!!!!!!")
-            streamSet = set()
-            searchName = self.request.get('target')
-            name_result = Stream.query(searchName == Stream.name).order(\
-                                                             -Stream.time)
-            tag_result = Tag.query(searchName == Tag.name)
-
-            lst = name_result.fetch(5)
-            result_list = []
-            image_list = []
-            titles = []
-            #keys = []
-
-            for streams in lst:
-                result_list.append(streams.key.urlsafe())
-                if streams.coverImage:
-                    image_list.append(streams.coverImage)
-                else:
-                    image_list.append('None')
-                titles.append(streams.name)
-                #keys.append(streams.key)
-
-            for names in name_result:
-                streamKey = names.key
-                if streamKey not in streamSet:
-                    streamSet.add(streamKey)
-                else:
-                    pass
-
-            i = 0
-            for tags in tag_result:
-                key_of_stream = tags.stream
-                if i == 5:
-                    break
-                else:
-                    if key_of_stream in streamSet:
-                        pass
-                    else:
-                        streamSet.add(key_of_stream)
-                        result_list.append(key_of_stream.get())
-                        if key_of_stream.get().coverImage:
-                            image_list.append(key_of_stream.get().coverImage)
-                        else:
-                            image_list.append('None')
-                        titles.append(key_of_stream.get().names)
-                        i = i + 1
-
-            response['resultUrls'] = result_list
-            response['resultImages'] = image_list
-            response['titles'] = titles
+            response['names'] = names
 
         logging.log(20, response)
         r = json.dumps(response)

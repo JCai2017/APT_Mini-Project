@@ -14,7 +14,7 @@ import logging
 import re
 import json
 
-from api import API
+from api import API, StreamAPI
 from upload import UpLoad
 from upload import Add_Image_mobile
 from upload import ViewAllStream
@@ -412,6 +412,7 @@ class ErrorPage(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
 	('/', MainPage),
 		('/api', API),
+		('/streamapi', StreamAPI),
 	('/create-stream', CreateStream),
 	('/upload', UpLoad),
 	('/view-all', ViewAllStream),

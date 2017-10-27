@@ -37,7 +37,7 @@
             android:label="@string/title_activity_image_upload" />
         <activity android:name=".ViewAllStreamsActivity" />
         <activity android:name=".ViewStreamActivity" />
-        <activity android:name=".ViewNearByStreamsActivity"></activity>
+        <activity android:name=".ViewNearbyImageActivity"></activity>
     </application>
 
 </manifest>

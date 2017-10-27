@@ -15,10 +15,10 @@ import android.widget.TextView;
 public class ImageGridAdapter extends BaseAdapter {
 
     private final Context mContext;
-    private final int[] streamIDs;
+    private final String[] streamIDs;
 
     // 1
-    public ImageGridAdapter(Context context, int[] sIDs) {
+    public ImageGridAdapter(Context context, String[] sIDs) {
         this.mContext = context;
         this.streamIDs = sIDs;
     }

@@ -11,7 +11,7 @@ public class ViewAllStreamsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_streams);
         GridView gridView = (GridView)findViewById(R.id.AllStreams);
-        ImageGridAdapter AllStreamAdapter = new ImageGridAdapter(this, new int[16]);
+        ImageGridAdapter AllStreamAdapter = new ImageGridAdapter(this, new String[16]);
         gridView.setAdapter(AllStreamAdapter);
     }
 }
