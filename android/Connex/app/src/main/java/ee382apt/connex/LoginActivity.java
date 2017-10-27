@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.button2).setOnClickListener(this);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -75,8 +76,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void viewStreams(){
-        Intent intent = new Intent(this, SearchResultsActivity.class);
-        intent.putExtra("userEmail", email);
+        Intent intent = new Intent(this, ViewAllStreamsActivity.class);
         startActivity(intent);
     }
 
