@@ -54,7 +54,7 @@ public class ImageUploadActivity extends AppCompatActivity implements LocationLi
 
     // flag for network status
     boolean isNetworkEnabled = false;
-
+    private static final String API_BASE_URL = "https://connex-180814.appspot.com/Add_Image_mobile?streamKey=";
     boolean canGetLocation = false;
     Location location; // location
     private double latitude;
@@ -78,13 +78,13 @@ public class ImageUploadActivity extends AppCompatActivity implements LocationLi
         TextView txv_streamName = (TextView) findViewById(R.id.txv_stream_name);
         txv_streamName.setText("Upload to: " + streamName);
 
-        String[] geoPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        String[] geocamPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        if (EasyPermissions.hasPermissions(ImageUploadActivity.this, geoPermissions)) {
+        if (EasyPermissions.hasPermissions(ImageUploadActivity.this, geocamPermissions)) {
             //decode file
         } else {
-            EasyPermissions.requestPermissions(ImageUploadActivity.this, "Access for geo",
-                    101, geoPermissions);
+            EasyPermissions.requestPermissions(ImageUploadActivity.this, "Access for geo and camera",
+                    101, geocamPermissions);
         }
         getGeoLocation();
 
@@ -115,8 +115,9 @@ public class ImageUploadActivity extends AppCompatActivity implements LocationLi
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Utils.gotoCameraActivity(ImageUploadActivity.this, CAMERA, userEmail);
                 Intent it = new Intent(ImageUploadActivity.this, CameraActivity.class);
+                it.putExtra("streamKey", streamKey);
+                it.putExtra("streamName", streamName);
                 it.putExtra("userEmail", userEmail);
                 startActivityForResult(it, CAMERA);
             }
@@ -258,9 +259,10 @@ public class ImageUploadActivity extends AppCompatActivity implements LocationLi
         }
 
         else if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
-            String path = data.getStringExtra("path");
+            //String path = data.getStringExtra("path");
 //            Bitmap bmp = BitmapFactory.decodeByteArray(byteArr , 0, byteArr.length);
-            Bitmap bmp = BitmapFactory.decodeFile(path);
+            //Bitmap bmp = BitmapFactory.decodeFile(path);
+            Bitmap bmp = (Bitmap) data.getExtras().get("bitmap");
             final Bitmap bitmapImage = rotateBitmap(bmp, 90);
             ImageView imgView = (ImageView) findViewById(R.id.thumbnail);
             imgView.setImageBitmap(bitmapImage);
@@ -285,7 +287,7 @@ public class ImageUploadActivity extends AppCompatActivity implements LocationLi
     }
 
     private void postToServer(byte[] encodedImage, String photoCaption){
-        String url = "https://apt-fall2017.appspot.com/Add_Image_mobile?streamKey="+streamKey;
+        String url = API_BASE_URL + streamKey;
         String imgLocation = String.valueOf(latitude)+", "+String.valueOf(longitude);
 
         RequestParams params = new RequestParams();
@@ -303,8 +305,8 @@ public class ImageUploadActivity extends AppCompatActivity implements LocationLi
                 Toast.makeText(context, "Upload Successful", Toast.LENGTH_SHORT).show();
 //                finish();
                // Utils.gotoViewSingleStreamActivity(ImageUploadActivity.this, streamKey, streamName, userEmail);
-                Intent intent = new Intent(ImageUploadActivity.this, SearchResultsActivity.class);
-                intent.putExtra("userEmail", userEmail);
+                Intent intent = new Intent(ImageUploadActivity.this, ViewAllStreamsActivity.class);
+                intent.putExtra("user_Email", userEmail);
                 startActivity(intent);
             }
             @Override
