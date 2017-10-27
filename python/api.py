@@ -164,7 +164,7 @@ class StreamAPI(webapp2.RequestHandler):
             response['names'] = names
 
         logging.log(20, response)
-        r = json.dumps(response)
+        r = json.dumps(response, ensure_ascii=False).encode('utf8')
         self.response.write(r)
 
 
