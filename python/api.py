@@ -141,14 +141,20 @@ class StreamAPI(webapp2.RequestHandler):
                 results = s.fetch(16)
                 for i in results:
                     names.append(i.name)
-                    coverImage.append(i.coverImage)
+                    if i.coverImage:
+                        coverImage.append(i.coverImage)
+                    else:
+                        coverImage.append("None")
             else:
                 sName = queries
-                result = Stream.query(name == sName).fetch(1)
+                result = Stream.query(Stream.name == sName).fetch(1)
                 for r in result:
                     names.append(r.name)
-                    coverImage.append(i.coverImage)
-                    imgs = Image.query(stream == r.name).fetch()
+                    if r.coverImage:
+                        coverImage.append(r.coverImage)
+                    else:
+                        coverImage.append("None")
+                    imgs = Image.query(Image.stream == r.name).fetch()
                     for img in imgs:
                         url = img.get_serving_url()
                         images.append(url)
