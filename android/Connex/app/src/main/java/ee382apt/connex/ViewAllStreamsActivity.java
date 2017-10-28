@@ -89,6 +89,10 @@ public class ViewAllStreamsActivity extends AppCompatActivity
             }
         });
         findViewById(R.id.SearchButton).setOnClickListener(this);
+        findViewById(R.id.NearByButton).setOnClickListener(this);
+        findViewById(R.id.MySubscribedStreamButton).setOnClickListener(this);
+
+
     }
 
     public void onClick(View v) {
