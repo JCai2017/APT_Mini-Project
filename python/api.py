@@ -129,12 +129,14 @@ class API(webapp2.RequestHandler):
 
 class StreamAPI(webapp2.RequestHandler):
     def get(self):
-        response = {'coverImage':[], 'images': [], 'names': []}
+        response = {'coverImage':[], 'images': [], 'names': [], 'owner': '', 'key': ''}
         queries = self.request.get('target')
         querySub = self.request.get('subscriber')
         names = []
         img = []
         coverImage = []
+        owner = ''
+        key = ''
         if queries:
             logging.log(20, "I'M IN!!!!!!!!")
             if queries == "all":
@@ -149,6 +151,8 @@ class StreamAPI(webapp2.RequestHandler):
             else:
                 sName = queries
                 result = Stream.query(Stream.name == sName).fetch(1)
+                owner = result[0].ownerEmail
+                key = result[0].key.urlsafe()
                 for r in result:
                     names.append(r.name)
                     if r.coverImage:
@@ -172,6 +176,8 @@ class StreamAPI(webapp2.RequestHandler):
             response['coverImage'] = coverImage
             response['images'] = img
             response['names'] = names
+            response['owner'] = owner
+            response['key'] = key
 
         logging.log(20, response)
         r = json.dumps(response, ensure_ascii=False).encode('utf8')

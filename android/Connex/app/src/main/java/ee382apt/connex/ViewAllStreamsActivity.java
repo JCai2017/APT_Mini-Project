@@ -1,7 +1,6 @@
 package ee382apt.connex;
 
 import android.content.Intent;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -89,6 +88,8 @@ public class ViewAllStreamsActivity extends AppCompatActivity
             }
         });
         findViewById(R.id.SearchButton).setOnClickListener(this);
+        findViewById(R.id.NearbyButton).setOnClickListener(this);
+        findViewById(R.id.MySubscribedStreamButton).setOnClickListener(this);
     }
 
     public void onClick(View v) {
@@ -96,16 +97,19 @@ public class ViewAllStreamsActivity extends AppCompatActivity
         switch (v.getId()) {
             case R.id.SearchButton:
                 intent = new Intent(this, SearchResultsActivity.class);
+                intent.putExtra("userEmail", email);
                 startActivity(intent);
                 break;
-            case R.id.NearByButton:
+            case R.id.NearbyButton:
                 intent = new Intent(this, ViewNearbyImageActivity.class);
                 startActivity(intent);
                 break;
             case R.id.MySubscribedStreamButton:
-                intent = new Intent(this, ViewSubsribedStreamActivity.class);
-                intent.putExtra("user_email", email);
-                startActivity(intent);
+                if(email != null) {
+                    intent = new Intent(this, ViewSubsribedStreamActivity.class);
+                    intent.putExtra("user_email", email);
+                    startActivity(intent);
+                }
                 break;
         }
     }
