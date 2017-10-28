@@ -176,6 +176,8 @@ class StreamAPI(webapp2.RequestHandler):
             if queryLocation:
                 logging.log(20, "I'M IN!!!!!!!!")
                 a, b = queryLocation.split("%")
+                a = float(a)
+                b = float(b)
                 all_image = Image.query().fetch()
                 for i in all_image:
                     x, y = i.geoPt.longitude, i.geoPt.latitude
