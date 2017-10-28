@@ -179,7 +179,7 @@ class StreamAPI(webapp2.RequestHandler):
                 all_image = Image.query().fetch()
                 for i in all_image:
                     x, y = i.geoPt.longitude, i.geoPt.latitude
-                    if x - a < 10 && a - x > -10 && y - b < 10 && b - y > -10:
+                    if x - a < 10 and a - x > -10 and y - b < 10 and b - y > -10:
                         img.append(i.Thumbnail)
             response['coverImage'] = coverImage
             response['images'] = img
