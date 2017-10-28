@@ -129,13 +129,15 @@ class API(webapp2.RequestHandler):
 
 class StreamAPI(webapp2.RequestHandler):
     def get(self):
-        response = {'coverImage':[], 'images': [], 'names': []}
+        response = {'coverImage':[], 'images': [], 'names': [], 'owner': '', 'key': ''}
         queries = self.request.get('target')
         querySub = self.request.get('subscriber')
         queryLocation = self.request.get('location')
         names = []
         img = []
         coverImage = []
+        owner = ''
+        key = ''
         if queries:
             logging.log(20, "I'M IN!!!!!!!!")
             if queries == "all":
@@ -150,6 +152,8 @@ class StreamAPI(webapp2.RequestHandler):
             else:
                 sName = queries
                 result = Stream.query(Stream.name == sName).fetch(1)
+                owner = result[0].ownerEmail
+                key = result[0].key.urlsafe()
                 for r in result:
                     names.append(r.name)
                     if r.coverImage:
@@ -175,11 +179,13 @@ class StreamAPI(webapp2.RequestHandler):
                 all_image = Image.query().fetch()
                 for i in all_image:
                     x, y = i.geoPt.longitude, i.geoPt.latitude
-                    if x - a < 10 && a - x > -10 && y - b < 10 && b - y > -10:
+                    if x - a < 10 and a - x > -10 and y - b < 10 and b - y > -10:
                         img.append(i.Thumbnail)
             response['coverImage'] = coverImage
             response['images'] = img
             response['names'] = names
+            response['owner'] = owner
+            response['key'] = key
 
         logging.log(20, response)
         r = json.dumps(response, ensure_ascii=False).encode('utf8')

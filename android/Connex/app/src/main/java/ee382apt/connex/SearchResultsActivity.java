@@ -56,12 +56,9 @@ public class SearchResultsActivity extends AppCompatActivity implements
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //Switch to View Image Activity with stream key
-                //TODO: replace LoginActivity with name of View Stream activity class
-                Intent it = new Intent(view.getContext(), ImageUploadActivity.class);
-                it.putExtra("streamKey", mKeys.get(i));
+                Intent it = new Intent(view.getContext(), ViewStreamActivity.class);
                 it.putExtra("streamName", mTitles.get(i));
-                it.putExtra("userEmail", email);
+                it.putExtra("user_email", email);
                 startActivity(it);
             }
         });

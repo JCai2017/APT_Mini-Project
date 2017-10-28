@@ -24,7 +24,7 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 
 public class ViewNearbyImageActivity extends AppCompatActivity implements LocationListener {
-    private static final String TAG  = "ImageUploadActivity";
+    private static final String TAG  = "NearByImageActivity";
     private final static int MIN_TIME = 5000;
     private final static float MIN_DIST = 5;
     LocationManager locationManager;
@@ -58,8 +58,9 @@ public class ViewNearbyImageActivity extends AppCompatActivity implements Locati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_nearby_image);
-        getGeoLocation();
 
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        getGeoLocation();
 
         urlsHolder = new ArrayList<String>();
         namesHolder = new ArrayList<String>();
