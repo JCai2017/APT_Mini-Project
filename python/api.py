@@ -132,6 +132,7 @@ class StreamAPI(webapp2.RequestHandler):
         response = {'coverImage':[], 'images': [], 'names': [], 'owner': '', 'key': ''}
         queries = self.request.get('target')
         querySub = self.request.get('subscriber')
+        queryLocation = self.request.get('location')
         names = []
         img = []
         coverImage = []
@@ -172,7 +173,14 @@ class StreamAPI(webapp2.RequestHandler):
                         coverImage.append(st.coverImage)
                     else:
                         coverImage.append("None")
-
+            if queryLocation:
+                logging.log(20, "I'M IN!!!!!!!!")
+                a, b = queryLocation.split("%")
+                all_image = Image.query().fetch()
+                for i in all_image:
+                    x, y = i.geoPt.longitude, i.geoPt.latitude
+                    if x - a < 10 && a - x > -10 && y - b < 10 && b - y > -10:
+                        img.append(i.Thumbnail)
             response['coverImage'] = coverImage
             response['images'] = img
             response['names'] = names
