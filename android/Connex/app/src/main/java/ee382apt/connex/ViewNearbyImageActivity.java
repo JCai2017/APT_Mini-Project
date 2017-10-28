@@ -23,7 +23,8 @@ import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 
-public class ViewNearbyImageActivity extends AppCompatActivity implements LocationListener {
+public class ViewNearbyImageActivity extends AppCompatActivity
+        implements LocationListener, View.OnClickListener {
     private static final String TAG  = "NearByImageActivity";
     private final static int MIN_TIME = 5000;
     private final static float MIN_DIST = 5;
@@ -86,6 +87,8 @@ public class ViewNearbyImageActivity extends AppCompatActivity implements Locati
                 });
         stringRequest.setTag(TAG2);
         requestQueue.add(stringRequest);
+
+        findViewById(R.id.StreamsButton).setOnClickListener(this);
 
     }
 
@@ -180,6 +183,17 @@ public class ViewNearbyImageActivity extends AppCompatActivity implements Locati
 
 //        Log.d(TAG, "LatitudeCHANGED: " + String.valueOf(latitude));
 //        Log.d(TAG, "LongitudeCHANGED: " + String.valueOf(longitude));
+    }
+
+    @Override
+    public void onClick(View v){
+        switch (v.getId()) {
+            case R.id.StreamsButton:
+                Intent intent = new Intent(this, ViewAllStreamsActivity.class);
+                intent.putExtra("userEmail", getIntent().getStringExtra("user_email"));
+                startActivity(intent);
+                break;
+        }
     }
 
 }

@@ -103,6 +103,7 @@ public class ViewAllStreamsActivity extends AppCompatActivity
                 break;
             case R.id.NearbyButton:
                 intent = new Intent(this, ViewNearbyImageActivity.class);
+                intent.putExtra("user_email", email);
                 startActivity(intent);
                 break;
             case R.id.MySubscribedStreamButton:

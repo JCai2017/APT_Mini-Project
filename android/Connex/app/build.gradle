@@ -5,7 +5,8 @@ android {
         config {
             keyAlias 'key0'
             keyPassword 'pass4access'
-            storeFile file('//Users/shidashen/Desktop/ADT_EE382V/mini/APT_Mini-Project/android/Connex/jason_keys.jks')
+            //storeFile file('//Users/shidashen/Desktop/ADT_EE382V/mini/APT_Mini-Project/android/Connex/jason_keys.jks')
+            storeFile file('C:/Users/caiju/Documents/ClassDocuments/EE382VAPT/APT_Mini-Project/android/Connex/jason_keys.jks')
             storePassword 'pass4key'
         }
     }
