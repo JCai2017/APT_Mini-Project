@@ -133,6 +133,7 @@ class StreamAPI(webapp2.RequestHandler):
         queries = self.request.get('target')
         querySub = self.request.get('subscriber')
         queryLocation = self.request.get('location')
+        queryLat = self.request.get('lat')
         names = []
         img = []
         coverImage = []
@@ -163,33 +164,40 @@ class StreamAPI(webapp2.RequestHandler):
                     imgs = Image.query(Image.stream == r.key).fetch()
                     for i in imgs:
                         img.append('/img?img_id=' + i.key.urlsafe())
-            if querySub:
-                logging.log(20, "I'M IN!!!!!!!!")
-                s = Subscriber.query(Subscriber.email == querySub).fetch()
-                for i in s:
-                    st = i.Stream
-                    names.append(st.name)
-                    if st.coverImage:
-                        coverImage.append(st.coverImage)
-                    else:
-                        coverImage.append("None")
-            if queryLocation:
-                logging.log(20, "I'M IN!!!!!!!!")
-                a, b = queryLocation.split("%")
-                a = float(a)
-                b = float(b)
-                all_image = Image.query().fetch()
-                for i in all_image:
-                    x, y = i.geoPt.longitude, i.geoPt.latitude
-                    if x - a < 10 and a - x > -10 and y - b < 10 and b - y > -10:
-                        img.append(i.Thumbnail)
-            response['coverImage'] = coverImage
-            response['images'] = img
-            response['names'] = names
-            response['owner'] = owner
-            response['key'] = key
+
+        if querySub:
+            logging.log(20, "I'M IN!!!!!!!!")
+            s = Subscriber.query(Subscriber.email == querySub).fetch()
+            for i in s:
+                st = i.stream
+                names.append(st.get().name)
+                if st.get().coverImage:
+                    coverImage.append(st.get().coverImage)
+                else:
+                    coverImage.append("None")
+
+        if queryLocation:
+            logging.log(20, "I'M IN!!!!!!!!")
+            a = queryLocation
+            b = queryLat
+            a = float(a)
+            b = float(b)
+            all_image = Image.query().fetch()
+            for i in all_image:
+                x, y = i.geoPt.lon, i.geoPt.lat
+                if x - a < 10 and a - x > -10 and y - b < 10 and b - y > -10:
+                    img.append('/img?img_id=' + i.key.urlsafe())
+
+        response['coverImage'] = coverImage
+        response['images'] = img
+        response['names'] = names
+        response['owner'] = owner
+        response['key'] = key
 
         logging.log(20, response)
-        r = json.dumps(response, ensure_ascii=False).encode('utf8')
+        #if querySub or queries:
+            #r = json.dumps(response, ensure_ascii=False).encode('utf8')
+        #else:
+        r = json.dumps(response)
         self.response.write(r)
 

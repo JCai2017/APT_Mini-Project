@@ -1,5 +1,6 @@
 package ee382apt.connex;
 
+import android.*;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -23,6 +24,8 @@ import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
 public class ViewNearbyImageActivity extends AppCompatActivity
         implements LocationListener, View.OnClickListener {
     private static final String TAG  = "NearByImageActivity";
@@ -41,7 +44,7 @@ public class ViewNearbyImageActivity extends AppCompatActivity
     private double longitude;
 
     private static class Resp{
-        ArrayList<String> urls = new ArrayList<String>();
+        ArrayList<String> images = new ArrayList<String>();
         ArrayList<String> names = new ArrayList<String>();
     }
 
@@ -60,6 +63,15 @@ public class ViewNearbyImageActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_nearby_image);
 
+        String[] geocamPermissions = {android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        if (EasyPermissions.hasPermissions(ViewNearbyImageActivity.this, geocamPermissions)) {
+            //decode file
+        } else {
+            EasyPermissions.requestPermissions(ViewNearbyImageActivity.this, "Access for geo and camera",
+                    101, geocamPermissions);
+        }
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         getGeoLocation();
 
@@ -67,7 +79,7 @@ public class ViewNearbyImageActivity extends AppCompatActivity
         namesHolder = new ArrayList<String>();
         resp = new Resp();
         gridView = (GridView)findViewById(R.id.NearByGrid);
-        String url = API_BASE_URL + Double.toString(longitude) + "%" +  Double.toString(latitude);
+        String url = API_BASE_URL + Double.toString(longitude) + "&lat=" +  Double.toString(latitude);
         requestQueue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>(){
@@ -96,10 +108,10 @@ public class ViewNearbyImageActivity extends AppCompatActivity
     void populateGridView() {
         namesHolder.clear();
         urlsHolder.clear();
-        for (int i = 0; i < resp.names.size(); ++i) {
-            urlsHolder.add(resp.urls.get(i));
-            namesHolder.add(resp.names.get(i));
-            NearByStreamAdapter = new ImageGridAdapter(this, namesHolder, urlsHolder);
+        for (int i = 0; i < resp.images.size(); ++i) {
+            urlsHolder.add("https://connex-180814.appspot.com/" +resp.images.get(i));
+            //namesHolder.add(resp.names.get(i));
+            NearByStreamAdapter = new ImageGridAdapter(this, null, urlsHolder);
             gridView.setAdapter(NearByStreamAdapter);
         }
     }
