@@ -111,7 +111,7 @@ class API(webapp2.RequestHandler):
                         pass
                     else:
                         streamSet.add(key_of_stream)
-                        result_list.append(key_of_stream.get())
+                        result_list.append(key_of_stream.urlsafe())
                         if key_of_stream.get().coverImage:
                             image_list.append(key_of_stream.get().coverImage)
                         else:
