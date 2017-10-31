@@ -5,11 +5,9 @@ package ee382apt.connex;
  */
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -23,6 +21,7 @@ public class ImageGridAdapter extends BaseAdapter {
     private final ArrayList<String> names;
     private final ArrayList<String> urls;
     private ImageLoader mImageLoader;
+    //private String BASE_URL = "https://apt-fall2017.appspot.com";
     private String BASE_URL = "https://connex-180814.appspot.com";
     // 1
     public ImageGridAdapter(Context context, ArrayList<String> names, ArrayList<String> img) {

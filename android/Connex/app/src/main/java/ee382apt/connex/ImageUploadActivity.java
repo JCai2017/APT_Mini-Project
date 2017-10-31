@@ -55,6 +55,7 @@ public class ImageUploadActivity extends AppCompatActivity implements LocationLi
     // flag for network status
     boolean isNetworkEnabled = false;
     private static final String API_BASE_URL = "https://connex-180814.appspot.com/Add_Image_mobile?streamKey=";
+    //private static final String API_BASE_URL = "https://apt-fall2017.appspot.com/Add_Image_mobile?streamKey=";
     boolean canGetLocation = false;
     Location location; // location
     private double latitude;
@@ -246,6 +247,7 @@ public class ImageUploadActivity extends AppCompatActivity implements LocationLi
                         @Override
                         public void onClick(View v) {
                             // Get photo caption
+                            text = (EditText) findViewById(R.id.upload_message);
                             String photoCaption = text.getText().toString();
 
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -273,6 +275,7 @@ public class ImageUploadActivity extends AppCompatActivity implements LocationLi
                 @Override
                 public void onClick(View v) {
                     // Get photo caption
+                    text = (EditText) findViewById(R.id.upload_message);
                     String photoCaption = text.getText().toString();
 
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();

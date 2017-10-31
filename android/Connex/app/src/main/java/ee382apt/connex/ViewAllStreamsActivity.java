@@ -28,6 +28,7 @@ public class ViewAllStreamsActivity extends AppCompatActivity
     }
 
     private static final String API_BASE_URL = "https://connex-180814.appspot.com/streamapi?target=";
+    //private static final String API_BASE_URL = "https://apt-fall2017.appspot.com/streamapi?target=";
     Resp resp;
     private static final String TAG = "MyTAG";
     private RequestQueue requestQueue;

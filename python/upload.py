@@ -36,6 +36,9 @@ class Stream(ndb.Model):
 	numImages = ndb.IntegerProperty()
 	views = ndb.IntegerProperty()
 
+class Tag(ndb.Model):
+	name = ndb.StringProperty()
+	stream = ndb.KeyProperty(kind=Stream)
 
 class Image(ndb.Model):
 	time = ndb.DateTimeProperty(auto_now_add=True)
@@ -208,6 +211,14 @@ class Add_Image_mobile(webapp2.RequestHandler):
 		imgLocation = self.request.get('imgLocation')
 		img.geoPt = ndb.GeoPt(imgLocation)
 		img.put()
+		tags = self.request.get('photoCaption')
+		if tags != "":
+			tagsList = tags.split(', ')
+			for item in tagsList:
+				tag = Tag()
+				tag.name = item
+				tag.stream = streamKey
+				tag.put()
 
 		stream = streamKey.get()
 		stream.lastTimeUpload = img.time

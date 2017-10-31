@@ -1,15 +1,13 @@
 package ee382apt.connex;
 
-import android.*;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.android.volley.Request;
@@ -49,6 +47,7 @@ public class ViewNearbyImageActivity extends AppCompatActivity
     }
 
     private static final String API_BASE_URL = "https://connex-180814.appspot.com/streamapi?location=";
+    //private static final String API_BASE_URL = "https://apt-fall2017.appspot.com/streamapi?location=";
     Resp resp;
     private static final String TAG2 = "MyTAG";
     private RequestQueue requestQueue;

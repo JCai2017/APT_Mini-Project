@@ -77,7 +77,7 @@ class API(webapp2.RequestHandler):
             searchName = self.request.get('target')
             name_result = Stream.query(searchName == Stream.name).order(\
                                                              -Stream.time)
-            tag_result = Tag.query(searchName == Tag.name)
+            tag_result = Tag.query('#'+searchName == Tag.name)
 
             lst = name_result.fetch(5)
             result_list = []
@@ -116,7 +116,7 @@ class API(webapp2.RequestHandler):
                             image_list.append(key_of_stream.get().coverImage)
                         else:
                             image_list.append('None')
-                        titles.append(key_of_stream.get().names)
+                        titles.append(key_of_stream.get().name)
                         i = i + 1
 
             response['resultUrls'] = result_list
